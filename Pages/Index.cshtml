@@ -1,0 +1,8 @@
+@page "{pageNumber}"
+
+@model hySite.IndexModel
+
+@foreach (var item in @Model.Posts) {
+
+    @Html.Raw(item)    
+}

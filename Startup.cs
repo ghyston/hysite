@@ -55,8 +55,8 @@ namespace hySite
                     template: "{controller}/{action=Index}/{id?}");
             });
 
-
-            createDb(findPosts(fileProvider));
+            var posts = findPosts(fileProvider);
+            createDb(posts, db);
         }
 
         private IEnumerable<IFileInfo> findPosts(IFileProvider fileProvider)
@@ -73,19 +73,28 @@ namespace hySite
             return postFiles;
         }
 
-        private void createDb(IEnumerable<IFileInfo> files)
+        private void createDb(IEnumerable<IFileInfo> files, AppDbContext db)
         {
             foreach(var fileInfo in files)
             {
+                //@todo: first line: Title
+                //@todo: second line: Timestamp
+                // rest is mdContent
+
+                var mdContent = new StreamReader(fileInfo.CreateReadStream()).ReadToEnd(); //@todo: do it async!
+                var htmlContent = mdContent; //@todo: render to html!
+
                 BlogPost post = new BlogPost()
                 {
                     Title = fileInfo.Name,
-                    MdContent = new StreamReader(fileInfo.CreateReadStream()).ReadToEnd(), //@todo: do it async!
+                    MdContent = mdContent,
+                    HtmlContent = htmlContent,
                     Created = fileInfo.LastModified.DateTime
                 };
-                
-                Console.WriteLine($"{fileInfo.Name} {fileInfo.LastModified.ToString()}");
+                db.BlogPosts.Add(post);
+                //Console.WriteLine($"{fileInfo.Name} {fileInfo.LastModified.ToString()}");
             }
+            db.SaveChanges();
 
         }
     }

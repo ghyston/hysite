@@ -1,0 +1,9 @@
+@page "{pageNumber}"
+
+@model PostModel
+
+@foreach (var item in @Model.MainContent) {
+    @Html.Raw(item)    
+}
+
+@Html.Raw(@Model.PostContent)

@@ -4,5 +4,7 @@
 
 @foreach (var item in @Model.Posts) {
 
-    @Html.Raw(item)    
+    @Html.Raw(item.Title)
+    @Html.Raw(item.HtmlContent)
+    <hr />          
 }

@@ -9,7 +9,7 @@ namespace hySite
 {
     public class IndexModel : PageModel
     {
-        public List<string> Posts {get; private set; } = new List<string>();
+        public List<BlogPost> Posts {get; private set; } = new List<BlogPost>();
 
         private readonly AppDbContext _db;
 
@@ -20,7 +20,7 @@ namespace hySite
 
         public void OnGet()
         {
-            this.Posts = _db.BlogPosts.Select(p => p.HtmlContent).ToList();
+            this.Posts = _db.BlogPosts.ToList();
             Console.WriteLine("Index.onGet");
         }
     }

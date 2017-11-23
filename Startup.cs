@@ -9,6 +9,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.EntityFrameworkCore;
+using Markdig;
 
 namespace hySite
 {
@@ -55,47 +56,53 @@ namespace hySite
                     template: "{controller}/{action=Index}/{id?}");
             });
 
-            var posts = findPosts(fileProvider);
-            createDb(posts, db);
-        }
+            var start = DateTime.Now;
+            createDb(fileProvider, db);
 
-        private IEnumerable<IFileInfo> findPosts(IFileProvider fileProvider)
-        {
-            var contents = fileProvider.GetDirectoryContents("posts");
-
-            Console.WriteLine("Files:");
-            var postFiles = contents.Where(f => f.Name.EndsWith(".md") && !f.IsDirectory).OrderBy(f => f.LastModified);
-            foreach(var fileInfo in postFiles)
+            if(env.IsDevelopment())
             {
-                Console.WriteLine($"{fileInfo.Name} {fileInfo.LastModified.ToString()}");
+                var diff = (DateTime.Now - start).ToString();
+                var count = db.BlogPosts.Count();
+                Console.WriteLine($"Parsing {count} posts, took {diff} time");
             }
-            Console.WriteLine("Thats all");
-            return postFiles;
         }
 
-        private void createDb(IEnumerable<IFileInfo> files, AppDbContext db)
+        private void createDb(IFileProvider fileProvider, AppDbContext db)
         {
+            IDirectoryContents contents = fileProvider.GetDirectoryContents("posts");
+            IEnumerable<IFileInfo> files = contents.Where(f => f.Name.EndsWith(".md") && !f.IsDirectory).OrderBy(f => f.LastModified);
+
             foreach(var fileInfo in files)
             {
-                //@todo: first line: Title
-                //@todo: second line: Timestamp
-                // rest is mdContent
+                AddFile(fileInfo, db);
+            }
+            db.SaveChanges();
+        }
 
-                var mdContent = new StreamReader(fileInfo.CreateReadStream()).ReadToEnd(); //@todo: do it async!
-                var htmlContent = mdContent; //@todo: render to html!
+        //@todo: parallel execution for all these files?
+        private void AddFile(IFileInfo fileInfo, AppDbContext db)
+        {
+            var streamReader = new StreamReader(fileInfo.CreateReadStream());
+                var title = streamReader.ReadLine();
+                var timeStr = streamReader.ReadLine();
+                DateTime postCreated = DateTime.Parse(timeStr); //@todo: do format provider, YYYY/mm/dd HH:mm
+                var unusedMetaDataLine = streamReader.ReadLine();
+                while(unusedMetaDataLine != "@@@")
+                {
+                    unusedMetaDataLine = streamReader.ReadLine();
+                }
+
+                var mdContent = streamReader.ReadToEnd();
+                var htmlContent = Markdown.ToHtml(mdContent);
 
                 BlogPost post = new BlogPost()
                 {
-                    Title = fileInfo.Name,
+                    Title = title,
                     MdContent = mdContent,
                     HtmlContent = htmlContent,
-                    Created = fileInfo.LastModified.DateTime
+                    Created = postCreated
                 };
                 db.BlogPosts.Add(post);
-                //Console.WriteLine($"{fileInfo.Name} {fileInfo.LastModified.ToString()}");
-            }
-            db.SaveChanges();
-
         }
     }
 }

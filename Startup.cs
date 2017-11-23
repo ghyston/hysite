@@ -8,8 +8,9 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
+using Microsoft.EntityFrameworkCore;
 
-namespace hysite
+namespace hySite
 {
     public class Startup
     {
@@ -30,10 +31,11 @@ namespace hysite
 
             var physicalProvider = _hostingEnviroment.ContentRootFileProvider;
             services.AddSingleton<IFileProvider>(physicalProvider);
+            services.AddDbContext<AppDbContext>(options => options.UseInMemoryDatabase("db"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, AppDbContext db, IFileProvider fileProvider)
         {
             if (env.IsDevelopment())
             {
@@ -52,13 +54,13 @@ namespace hysite
                     name: "default",
                     template: "{controller}/{action=Index}/{id?}");
             });
-            FindPosts();
+
+
+            createDb(findPosts(fileProvider));
         }
 
-        public void FindPosts()
+        private IEnumerable<IFileInfo> findPosts(IFileProvider fileProvider)
         {
-            
-            IFileProvider fileProvider = _hostingEnviroment.ContentRootFileProvider;
             var contents = fileProvider.GetDirectoryContents("posts");
 
             Console.WriteLine("Files:");
@@ -68,6 +70,23 @@ namespace hysite
                 Console.WriteLine($"{fileInfo.Name} {fileInfo.LastModified.ToString()}");
             }
             Console.WriteLine("Thats all");
+            return postFiles;
+        }
+
+        private void createDb(IEnumerable<IFileInfo> files)
+        {
+            foreach(var fileInfo in files)
+            {
+                BlogPost post = new BlogPost()
+                {
+                    Title = fileInfo.Name,
+                    MdContent = new StreamReader(fileInfo.CreateReadStream()).ReadToEnd(), //@todo: do it async!
+                    Created = fileInfo.LastModified.DateTime
+                };
+                
+                Console.WriteLine($"{fileInfo.Name} {fileInfo.LastModified.ToString()}");
+            }
+
         }
     }
 }

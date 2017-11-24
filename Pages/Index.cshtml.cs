@@ -29,7 +29,7 @@ namespace hySite
             this.PrevPage = pageNumber == 0 ? (int?)null : (pageNumber - 1);
             var pages = _db.BlogPosts.Count() / POSTS_PER_PAGE;
             this.NextPage = pageNumber >= pages ? (int?)null : (pageNumber + 1);
-            this.Posts = _db.BlogPosts.OrderBy(p => p.Created).Skip(this.Page * POSTS_PER_PAGE).Take(POSTS_PER_PAGE).ToList();
+            this.Posts = _db.BlogPosts.OrderByDescending(p => p.Created).Skip(this.Page * POSTS_PER_PAGE).Take(POSTS_PER_PAGE).ToList();
             //@todo: move to repository
         }
     }

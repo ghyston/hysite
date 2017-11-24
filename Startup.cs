@@ -92,6 +92,7 @@ namespace hySite
                 var unusedMetaDataLine = streamReader.ReadLine();
                 while(unusedMetaDataLine != "@@@")
                 {
+                    //@todo: add test, if file is broken
                     unusedMetaDataLine = streamReader.ReadLine();
                 }
 

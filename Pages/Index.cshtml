@@ -1,10 +1,21 @@
-@page "{pageNumber}"
+@page "{pageNumber:int}"
 
 @model hySite.IndexModel
 
 @foreach (var item in @Model.Posts) {
 
-    @Html.Raw(item.Title)
+    <h2>@Html.Raw(item.Title)</h2>
+    <p style="font-size: 12px; color: gray;">@Html.Raw(item.Created)</p>
     @Html.Raw(item.HtmlContent)
     <hr />          
+}
+
+@if(@Model.PrevPage != null)
+{
+    <a style="float: left" href="/@Model.PrevPage">Previous</a>
+}
+
+@if(@Model.NextPage != null)
+{
+    <a style="float: right" href="/@Model.NextPage">Next</a>
 }

@@ -10,6 +10,11 @@ namespace hySite
     public class IndexModel : PageModel
     {
         public List<BlogPost> Posts {get; private set; } = new List<BlogPost>();
+        public int Page {get; set; }
+        public int? NextPage { get; set; }
+        public int? PrevPage { get; set; }
+        
+        private const int POSTS_PER_PAGE = 5;
 
         private readonly AppDbContext _db;
 
@@ -18,10 +23,14 @@ namespace hySite
             _db = db;
         }
 
-        public void OnGet()
+        public void OnGet(int pageNumber)
         {
-            this.Posts = _db.BlogPosts.ToList();
-            Console.WriteLine("Index.onGet");
+            this.Page = pageNumber;            
+            this.PrevPage = pageNumber == 0 ? (int?)null : (pageNumber - 1);
+            var pages = _db.BlogPosts.Count() / POSTS_PER_PAGE;
+            this.NextPage = pageNumber >= pages ? (int?)null : (pageNumber + 1);
+            this.Posts = _db.BlogPosts.OrderBy(p => p.Created).Skip(this.Page * POSTS_PER_PAGE).Take(POSTS_PER_PAGE).ToList();
+            //@todo: move to repository
         }
     }
 }

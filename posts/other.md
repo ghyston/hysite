@@ -1,6 +1,13 @@
-This is a disaster
+Refrigerator Repair Guides
 2014/01/28 19:45
 @@@
-## second post
+Tools Required
+* 1/4" nut driver
+* Screwdriver
+* Work gloves
+** left
+** right
+* Wire stripper
 
-Somethings is wrong
+Fuck that refrigirator, lets look at this beutifull iPad
+![ipad](ipad.jpeg)

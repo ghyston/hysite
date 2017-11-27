@@ -31,9 +31,10 @@ namespace hySite
         {
             services.AddMvc().AddRazorPagesOptions(options => {
                 options.Conventions.AddPageRoute("/Index", "");
+                options.Conventions.AddPageRoute("/Post", "{postname:alpha}");
             });
             
-
+            //@todo: use one postsFileProvider
             var physicalProvider = _hostingEnviroment.ContentRootFileProvider;
             services.AddSingleton<IFileProvider>(physicalProvider);
             services.AddDbContext<AppDbContext>(options => options.UseInMemoryDatabase("db"));
@@ -108,6 +109,7 @@ namespace hySite
 
                 BlogPost post = new BlogPost()
                 {
+                    FileName = Path.GetFileNameWithoutExtension(fileInfo.Name).ToLower(),
                     Title = title,
                     MdContent = mdContent,
                     HtmlContent = htmlContent,

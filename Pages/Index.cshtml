@@ -4,7 +4,7 @@
 
 @foreach (var item in @Model.Posts) {
 
-    <h2>@Html.Raw(item.Title)</h2>
+    <h2><a href="@Html.Raw(item.FileName)">@Html.Raw(item.Title)</a></h2>
     <p style="font-size: 12px; color: gray;">@Html.Raw(item.Created)</p>
     @Html.Raw(item.HtmlContent)
     <hr />          

@@ -12,7 +12,7 @@ namespace hySite
         public List<BlogPost> Posts {get; private set; } = new List<BlogPost>();
         public int Page {get; set; }
         public int? NextPage { get; set; }
-        public int? PrevPage { get; set; }
+        public int? PrevPage { get; set; } //@todo: make it string? to hide "/0" at first page
         
         private const int POSTS_PER_PAGE = 5;
 

@@ -8,6 +8,9 @@ namespace hySite
         public int Id { get; set; }
 
         [Required, StringLength(100)]
+        public string FileName { get; set; }
+
+        [Required, StringLength(100)]
         public string Title { get; set; }
 
         [Required]
@@ -16,6 +19,7 @@ namespace hySite
         [Required]
         public string HtmlContent { get; set; }
 
+        [Required]
         public DateTime Created {get; set;}
     }
 }

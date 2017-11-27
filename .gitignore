@@ -30,3 +30,9 @@ msbuild.wrn
 
 # Visual Studio 2015
 .vs/
+
+#hysite scripts
+Dockerfile
+build.sh
+publish.sh
+run.sh

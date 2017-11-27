@@ -20,7 +20,7 @@ namespace hySite
             _db = db;
         }
 
-        public async Task<IActionResult> OnGet(string postName)
+        public IActionResult OnGet(string postName)
         {
             postName = postName.ToLower();
             BlogPost = _db.BlogPosts.Where(p => p.FileName == postName).FirstOrDefault();

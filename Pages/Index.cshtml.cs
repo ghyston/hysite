@@ -10,7 +10,7 @@ namespace hySite
     public class IndexModel : PageModel
     {
         public List<BlogPost> Posts {get; private set; } = new List<BlogPost>();
-        public int Page {get; set; }
+        public int PageNum {get; set; }
         public int? NextPage { get; set; }
         public int? PrevPage { get; set; } //@todo: make it string? to hide "/0" at first page
         
@@ -25,11 +25,11 @@ namespace hySite
 
         public void OnGet(int pageNumber)
         {
-            this.Page = pageNumber;            
+            this.PageNum = pageNumber;            
             this.PrevPage = pageNumber == 0 ? (int?)null : (pageNumber - 1);
             var pages = _db.BlogPosts.Count() / POSTS_PER_PAGE;
             this.NextPage = pageNumber >= pages ? (int?)null : (pageNumber + 1);
-            this.Posts = _db.BlogPosts.OrderByDescending(p => p.Created).Skip(this.Page * POSTS_PER_PAGE).Take(POSTS_PER_PAGE).ToList();
+            this.Posts = _db.BlogPosts.OrderByDescending(p => p.Created).Skip(this.PageNum * POSTS_PER_PAGE).Take(POSTS_PER_PAGE).ToList();
             //@todo: move to repository
         }
     }

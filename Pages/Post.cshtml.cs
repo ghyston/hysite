@@ -10,20 +10,19 @@ namespace hySite
 {
     public class PostModel : PageModel
     {
-        private readonly AppDbContext _db;
+        private readonly IBlogPostRepository _blogPostRepository;
 
         [BindProperty]
         public BlogPost BlogPost { get; set; }
 
-        public PostModel(AppDbContext db)
+        public PostModel(IBlogPostRepository blogPostRepository)
         {
-            _db = db;
+            _blogPostRepository = blogPostRepository;
         }
 
         public IActionResult OnGet(string postName)
         {
-            postName = postName.ToLower();
-            BlogPost = _db.BlogPosts.Where(p => p.FileName == postName).FirstOrDefault();
+            BlogPost = _blogPostRepository.FindPostByFileName(postName.ToLower());
             if(BlogPost == null)
             {
                 return RedirectToPage("/LostAndNotFound");

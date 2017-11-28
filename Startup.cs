@@ -38,10 +38,12 @@ namespace hySite
             var physicalProvider = _hostingEnviroment.ContentRootFileProvider;
             services.AddSingleton<IFileProvider>(physicalProvider);
             services.AddDbContext<AppDbContext>(options => options.UseInMemoryDatabase("db"));
+            services.AddScoped<IBlogPostRepository, BlogPostRepository>(); //Scoped has lifetime per request
+            services.AddTransient<IFileParserService, FileParserService>(); //Transient created each time
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, AppDbContext db, IFileProvider fileProvider)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IFileParserService fileParserService)
         {
             if (env.IsDevelopment())
             {
@@ -67,55 +69,16 @@ namespace hySite
                     template: "{controller}/{action=Index}/{id?}");
             });
 
-            var start = DateTime.Now;
-            createDb(fileProvider, db);
+            //var start = DateTime.Now;
 
-            if(env.IsDevelopment())
+            fileParserService.CreateDb();
+
+            /*if(env.IsDevelopment())
             {
                 var diff = (DateTime.Now - start).ToString();
                 var count = db.BlogPosts.Count();
                 Console.WriteLine($"Parsing {count} posts, took {diff} time");
-            }
-        }
-
-        private void createDb(IFileProvider fileProvider, AppDbContext db)
-        {
-            IDirectoryContents contents = fileProvider.GetDirectoryContents("posts");
-            IEnumerable<IFileInfo> files = contents.Where(f => f.Name.EndsWith(".md") && !f.IsDirectory).OrderBy(f => f.LastModified);
-
-            foreach(var fileInfo in files)
-            {
-                AddFile(fileInfo, db);
-            }
-            db.SaveChanges();
-        }
-
-        //@todo: parallel execution for all these files?
-        private void AddFile(IFileInfo fileInfo, AppDbContext db)
-        {
-            var streamReader = new StreamReader(fileInfo.CreateReadStream());
-                var title = streamReader.ReadLine();
-                var timeStr = streamReader.ReadLine();
-                DateTime postCreated = DateTime.Parse(timeStr); //@todo: do format provider, YYYY/mm/dd HH:mm
-                var unusedMetaDataLine = streamReader.ReadLine();
-                while(unusedMetaDataLine != "@@@")
-                {
-                    //@todo: add test, if file is broken
-                    unusedMetaDataLine = streamReader.ReadLine();
-                }
-
-                var mdContent = streamReader.ReadToEnd();
-                var htmlContent = Markdown.ToHtml(mdContent);
-
-                BlogPost post = new BlogPost()
-                {
-                    FileName = Path.GetFileNameWithoutExtension(fileInfo.Name).ToLower(),
-                    Title = title,
-                    MdContent = mdContent,
-                    HtmlContent = htmlContent,
-                    Created = postCreated
-                };
-                db.BlogPosts.Add(post);
+            }*/
         }
     }
 }

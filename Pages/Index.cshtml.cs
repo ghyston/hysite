@@ -16,21 +16,20 @@ namespace hySite
         
         private const int POSTS_PER_PAGE = 5;
 
-        private readonly AppDbContext _db;
+        private readonly IBlogPostRepository _blogPostRepository;
 
-        public IndexModel(AppDbContext db)
+        public IndexModel(IBlogPostRepository blogPostRepository)
         {
-            _db = db;
+            _blogPostRepository = blogPostRepository;
         }
 
         public void OnGet(int pageNumber)
         {
+            var pagesCount = _blogPostRepository.PostsCount() / POSTS_PER_PAGE;
             this.PageNum = pageNumber;            
-            this.PrevPage = pageNumber == 0 ? (int?)null : (pageNumber - 1);
-            var pages = _db.BlogPosts.Count() / POSTS_PER_PAGE;
-            this.NextPage = pageNumber >= pages ? (int?)null : (pageNumber + 1);
-            this.Posts = _db.BlogPosts.OrderByDescending(p => p.Created).Skip(this.PageNum * POSTS_PER_PAGE).Take(POSTS_PER_PAGE).ToList();
-            //@todo: move to repository
+            this.PrevPage = pageNumber == 0 ? (int?)null : (pageNumber - 1);            
+            this.NextPage = pageNumber >= pagesCount ? (int?)null : (pageNumber + 1);
+            this.Posts = _blogPostRepository.FindPostsByPage(this.PageNum, POSTS_PER_PAGE).ToList();
         }
     }
 }

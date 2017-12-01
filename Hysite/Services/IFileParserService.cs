@@ -1,4 +1,5 @@
 using Microsoft.Extensions.FileProviders;
+using System.IO;
 
 namespace hySite
 {
@@ -6,7 +7,7 @@ namespace hySite
     {
         //@todo: rename?
         void CreateDb();
-        void AddFile(IFileInfo fileInfo);
+        void AddPostFromStream(string fileName, StreamReader streamReader);
     }
 
 }

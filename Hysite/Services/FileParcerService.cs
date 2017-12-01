@@ -9,6 +9,15 @@ using Markdig;
 
 namespace hySite
 {
+    public class FileParserServiceException : Exception 
+    { 
+        public FileParserServiceException() { }
+
+        public FileParserServiceException(string message) : base(message) { }
+
+        public FileParserServiceException(string message, Exception inner) : base(message, inner) {} 
+    }
+
     public class FileParserService : IFileParserService
     {
         private IFileProvider _fileProvider;
@@ -32,21 +41,27 @@ namespace hySite
 
             foreach(var fileInfo in files)
             {
-                AddFile(fileInfo);
+                AddPostFromStream(fileInfo.Name, new StreamReader(fileInfo.CreateReadStream()));
             }
             _dbContext.SaveChanges();
 
         }
 
-        public void AddFile(IFileInfo fileInfo)
+
+
+        public void AddPostFromStream(string fileName, StreamReader streamReader)
         {
-            var streamReader = new StreamReader(fileInfo.CreateReadStream());
             var title = streamReader.ReadLine();
             var timeStr = streamReader.ReadLine();
             DateTime postCreated = DateTime.Parse(timeStr); //@todo: do format provider, YYYY/mm/dd HH:mm
             var unusedMetaDataLine = streamReader.ReadLine();
             while(unusedMetaDataLine != "@@@")
             {
+                if(streamReader.EndOfStream)
+                {
+                    throw new FileParserServiceException("Metadata marker not found");
+                }
+
                 //@todo: add test, if file is broken
                 unusedMetaDataLine = streamReader.ReadLine();
             }
@@ -56,7 +71,7 @@ namespace hySite
 
             BlogPost post = new BlogPost()
             {
-                FileName = Path.GetFileNameWithoutExtension(fileInfo.Name).ToLower(),
+                FileName = Path.GetFileNameWithoutExtension(fileName).ToLower(),
                 Title = title,
                 MdContent = mdContent,
                 HtmlContent = htmlContent,

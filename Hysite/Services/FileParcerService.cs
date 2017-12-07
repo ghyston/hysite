@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 using System.Linq;
+using System.Globalization;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.EntityFrameworkCore;
@@ -53,7 +54,16 @@ namespace hySite
         {
             var title = streamReader.ReadLine();
             var timeStr = streamReader.ReadLine();
-            DateTime postCreated = DateTime.Parse(timeStr); //@todo: do format provider, YYYY/mm/dd HH:mm
+            DateTime postCreated;
+            try
+            {
+                postCreated = DateTime.ParseExact(timeStr, "yyyy/mm/dd HH:mm", CultureInfo.InvariantCulture);
+            }
+            catch (FormatException) 
+            {
+                throw new FileParserServiceException($"{timeStr} is not in the correct date format.");
+            } 
+            
             var unusedMetaDataLine = streamReader.ReadLine();
             while(unusedMetaDataLine != "@@@")
             {

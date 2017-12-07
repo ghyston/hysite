@@ -4,6 +4,7 @@ using System.IO;
 using Xunit;
 using Moq;
 using Microsoft.Extensions.FileProviders;
+using Microsoft.EntityFrameworkCore;
 
 namespace hySite.Tests
 {
@@ -13,17 +14,22 @@ namespace hySite.Tests
         gogog
         @@@@";
         
-        private FileParserService service {get; set; }
+        private FileParserService _service {get; set; }
 
         private Mock<IFileProvider> MockFileProvider = new Mock<IFileProvider>();
-        private Mock<AppDbContext> MockAppContextDb = new Mock<AppDbContext>();
         private Mock<IBlogPostRepository> MockBlogRepository = new Mock<IBlogPostRepository>();
+
+        private AppDbContext _dbContext {get; set;}
 
         public FileParserServiceTest()
         {
-            service = new FileParserService(
+             var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>();
+            optionsBuilder.UseInMemoryDatabase();
+            _dbContext = new AppDbContext(optionsBuilder.Options);
+
+            _service = new FileParserService(
                 MockFileProvider.Object,
-                MockAppContextDb.Object,
+                _dbContext,
                 MockBlogRepository.Object
             );
         }
@@ -46,7 +52,7 @@ namespace hySite.Tests
             var reader = CreateStringReader(fileContent);
             //service.AddPostFromStream(fileName, reader);
 
-            Assert.Throws<FileParserServiceException>(() => service.AddPostFromStream(fileName, reader));
+            Assert.Throws<FileParserServiceException>(() => _service.AddPostFromStream(fileName, reader));
             //Assert.True(true); 
         }
     }

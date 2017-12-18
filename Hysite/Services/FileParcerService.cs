@@ -42,7 +42,18 @@ namespace hySite
 
             foreach(var fileInfo in files)
             {
-                AddPostFromStream(fileInfo.Name, new StreamReader(fileInfo.CreateReadStream()));
+                var fileName = fileInfo.Name;
+                var reader = new StreamReader(fileInfo.CreateReadStream());
+
+                try {
+                    var post = ParseFile(fileName, reader);
+                    _blogPostRepository.Add(post);
+                }
+                catch(FileParserServiceException ex)
+                {
+                    //@todo: add logger
+                    Console.WriteLine($"File: {fileName} Exception: {ex.Message}");
+                }
             }
             _dbContext.SaveChanges();
 
@@ -50,21 +61,31 @@ namespace hySite
 
 
 
-        public void AddPostFromStream(string fileName, StreamReader streamReader)
+        public BlogPost ParseFile(string fileName, StreamReader streamReader)
         {
-            var title = streamReader.ReadLine();
-            var timeStr = streamReader.ReadLine();
+            if(fileName.Contains(' '))
+            {
+                throw new FileParserServiceException($"Filename should not contain spaces");
+            }
+
+            var title = streamReader.ReadLine()?.Trim();
+            if(title is null)
+            {
+                throw new FileParserServiceException($"File is empty");
+            }
+
+            var timeStr = streamReader.ReadLine()?.Trim();
             DateTime postCreated;
             try
             {
-                postCreated = DateTime.ParseExact(timeStr, "yyyy/mm/dd HH:mm", CultureInfo.InvariantCulture);
+                postCreated = DateTime.ParseExact(timeStr, "yyyy/MM/dd HH:mm", CultureInfo.InvariantCulture);
             }
-            catch (FormatException) 
+            catch (FormatException fe) 
             {
-                throw new FileParserServiceException($"{timeStr} is not in the correct date format.");
+                throw new FileParserServiceException($"{timeStr} is not in the correct date format: {fe.Message}");
             } 
             
-            var unusedMetaDataLine = streamReader.ReadLine();
+            var unusedMetaDataLine = streamReader.ReadLine()?.Trim();
             while(unusedMetaDataLine != "@@@")
             {
                 if(streamReader.EndOfStream)
@@ -72,14 +93,13 @@ namespace hySite
                     throw new FileParserServiceException("Metadata marker not found");
                 }
 
-                //@todo: add test, if file is broken
-                unusedMetaDataLine = streamReader.ReadLine();
+                unusedMetaDataLine = streamReader.ReadLine()?.Trim();
             }
 
             var mdContent = streamReader.ReadToEnd();
             var htmlContent = Markdown.ToHtml(mdContent);
 
-            BlogPost post = new BlogPost()
+            return new BlogPost()
             {
                 FileName = Path.GetFileNameWithoutExtension(fileName).ToLower(),
                 Title = title,
@@ -87,7 +107,6 @@ namespace hySite
                 HtmlContent = htmlContent,
                 Created = postCreated
             };
-            _blogPostRepository.Add(post);
         }
     }
 

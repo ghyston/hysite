@@ -7,7 +7,7 @@ namespace hySite
     {
         //@todo: rename?
         void CreateDb();
-        void AddPostFromStream(string fileName, StreamReader streamReader);
+        BlogPost ParseFile(string fileName, StreamReader streamReader);
     }
 
 }

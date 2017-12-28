@@ -5,8 +5,7 @@ namespace hySite
 {
     public interface IFileParserService
     {
-        //@todo: rename?
-        void CreateDb();
+        void ParseExistingFiles();
         BlogPost ParseFile(string fileName, StreamReader streamReader);
     }
 

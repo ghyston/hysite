@@ -35,28 +35,34 @@ namespace hySite
             _blogPostRepository = blogPostRepository;
         }
 
-        public void CreateDb()
+        public void ParseExistingFiles()
         {
             IDirectoryContents contents = _fileProvider.GetDirectoryContents("posts");
             IEnumerable<IFileInfo> files = contents.Where(f => f.Name.EndsWith(".md") && !f.IsDirectory).OrderBy(f => f.LastModified);
 
+            List<BlogPost> posts = new List<BlogPost>();
+
             foreach(var fileInfo in files)
             {
                 var fileName = fileInfo.Name;
-                var reader = new StreamReader(fileInfo.CreateReadStream());
-
-                try {
-                    var post = ParseFile(fileName, reader);
-                    _blogPostRepository.Add(post);
-                }
-                catch(FileParserServiceException ex)
+                using(var reader = new StreamReader(fileInfo.CreateReadStream()))
                 {
-                    //@todo: add logger
-                    Console.WriteLine($"File: {fileName} Exception: {ex.Message}");
+                    try {
+
+                        var post = ParseFile(fileName, reader);
+                        posts.Add(post);
+                    }
+                    catch(FileParserServiceException ex)
+                    {
+                        //@todo: add logger
+                        Console.WriteLine($"File: {fileName} Exception: {ex.Message}");
+                    }
                 }
             }
-            _dbContext.SaveChanges();
 
+            _blogPostRepository.RemoveAll();
+            _blogPostRepository.Add(posts);
+            _dbContext.SaveChanges();
         }
 
 
@@ -75,14 +81,15 @@ namespace hySite
             }
 
             var timeStr = streamReader.ReadLine()?.Trim();
+            var dateFormat = "yyyy/MM/dd HH:mm";
             DateTime postCreated;
             try
             {
-                postCreated = DateTime.ParseExact(timeStr, "yyyy/MM/dd HH:mm", CultureInfo.InvariantCulture);
+                postCreated = DateTime.ParseExact(timeStr, dateFormat, CultureInfo.InvariantCulture);
             }
-            catch (FormatException fe) 
+            catch (FormatException) 
             {
-                throw new FileParserServiceException($"{timeStr} is not in the correct date format: {fe.Message}");
+                throw new FileParserServiceException($"'{timeStr}' is not in the correct date format '{dateFormat}'");
             } 
             
             var unusedMetaDataLine = streamReader.ReadLine()?.Trim();

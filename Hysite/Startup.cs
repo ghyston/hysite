@@ -71,7 +71,7 @@ namespace hySite
 
             //var start = DateTime.Now;
 
-            fileParserService.CreateDb();
+            fileParserService.ParseExistingFiles();
 
             /*if(env.IsDevelopment())
             {

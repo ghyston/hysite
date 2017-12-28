@@ -16,6 +16,11 @@ namespace hySite
         {
             _dbContext.Add(post);
         }
+
+        public void Add(IEnumerable<BlogPost> posts)
+        {
+            _dbContext.AddRange(posts);
+        }
             
         public BlogPost FindPostByFileName(string fileName)
         {
@@ -38,6 +43,11 @@ namespace hySite
         public int PostsCount()
         {
             return _dbContext.BlogPosts.Count();
+        }
+
+        public void RemoveAll()
+        {
+            _dbContext.BlogPosts.RemoveRange(_dbContext.BlogPosts);
         }
     }
 }

@@ -40,10 +40,16 @@ namespace hySite
             services.AddDbContext<AppDbContext>(options => options.UseInMemoryDatabase("db"));
             services.AddScoped<IBlogPostRepository, BlogPostRepository>(); //Scoped has lifetime per request
             services.AddTransient<IFileParserService, FileParserService>(); //Transient created each time
+            services.AddTransient<IOnNewHandler, OnNewFileHandler>();
+            services.AddTransient<IFileWatcherSingleton, FileWatcherSingleton>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IFileParserService fileParserService)
+        public void Configure(
+            IApplicationBuilder app, 
+            IHostingEnvironment env, 
+            IFileParserService fileParserService, 
+            IFileWatcherSingleton fileWatcher)
         {
             if (env.IsDevelopment())
             {
@@ -72,6 +78,9 @@ namespace hySite
             //var start = DateTime.Now;
 
             fileParserService.ParseExistingFiles();
+            fileWatcher.StartWatch();
+
+            
 
             /*if(env.IsDevelopment())
             {

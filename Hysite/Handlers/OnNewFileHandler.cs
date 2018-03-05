@@ -3,13 +3,16 @@ using System.IO;
 
 namespace hySite 
 {
-    //@todo: make it common, etc
-    public interface IOnNewHandler
+    public struct OnNewFileRequest
     {
-        void Handle(string filePath);
+        public string FilePath { get; set; }
     }
 
-    public class OnNewFileHandler : IOnNewHandler
+    public struct OnNewFileResponse
+    {
+    }
+
+    public class OnNewFileHandler : IHandler<OnNewFileRequest, OnNewFileResponse>
     {
         private readonly IFileParserService _fileParserService;
         private readonly IBlogPostRepository _blogPostRepository;
@@ -22,10 +25,10 @@ namespace hySite
             _dbContext = dbContext;
         }
 
-        public void Handle(string filePath)
+        public OnNewFileResponse Handle(OnNewFileRequest request)
         {
-            var fileName = Path.GetFileName(filePath);
-            var fileInfo = new FileInfo(filePath);
+            var fileName = Path.GetFileName(request.FilePath);
+            var fileInfo = new FileInfo(request.FilePath);
 
             using(var reader = fileInfo.OpenText())
             {
@@ -39,6 +42,8 @@ namespace hySite
                     //@todo: log it
                 }
             }
+
+            return new OnNewFileResponse();
         }
 
 

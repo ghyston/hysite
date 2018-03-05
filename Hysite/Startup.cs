@@ -41,9 +41,12 @@ namespace hySite
             services.AddDbContext<AppDbContext>(options => options.UseInMemoryDatabase("db"));
             services.AddScoped<IBlogPostRepository, BlogPostRepository>(); //Scoped has lifetime per request
             services.AddTransient<IFileParserService, FileParserService>(); //Transient created each time
-            services.AddSingleton<IFileWatcherSingleton, FileWatcherSingleton>();
+            services.AddSingleton<IFileWatcherSingleton, FileWatcherService>();
             
             services.AddTransient<IHandler<OnNewFileRequest, OnNewFileResponse>, OnNewFileHandler>();
+            services.AddTransient<IHandler<OnFileChangedRequest, OnFileChangedResponse>, OnFileChangedHandler>();
+            services.AddTransient<IHandler<OnFileRenamedRequest, OnFileRenamedResponse>, OnFileRenamedHandler>();
+            services.AddTransient<IHandler<OnFileDeletedRequest, OnFileDeletedResponse>, OnFileDeletedHandler>();
 
             return services.BuildServiceProvider();
         }

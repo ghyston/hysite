@@ -1,4 +1,4 @@
-Refrigerator Repair Guides
+Other post
 2014/01/28 19:45
 @@@
 Tools Required
@@ -13,3 +13,4 @@ Fuck that refrigirator, lets look at this beutifull iPad
 ![ipad](ipad.jpeg)
 
 lets change this file!
+Foo2

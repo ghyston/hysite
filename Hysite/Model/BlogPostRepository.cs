@@ -45,6 +45,11 @@ namespace hySite
             return _dbContext.BlogPosts.Count();
         }
 
+        public void Remove(BlogPost post)
+        {
+            _dbContext.BlogPosts.Remove(post);
+        }
+
         public void RemoveAll()
         {
             _dbContext.BlogPosts.RemoveRange(_dbContext.BlogPosts);

@@ -21,5 +21,12 @@ namespace hySite
 
         [Required]
         public DateTime Created {get; set;}
+
+        public void Update(BlogPost post)
+        {
+            Title = post.Title;
+            MdContent = post.MdContent;
+            HtmlContent = post.HtmlContent;
+        }
     }
 }

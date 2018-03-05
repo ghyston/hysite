@@ -27,26 +27,17 @@ namespace hySite
 
         public OnNewFileResponse Handle(OnNewFileRequest request)
         {
-            var fileName = Path.GetFileName(request.FilePath);
+            var fileName = Path.GetFileNameWithoutExtension(request.FilePath).ToLower();
             var fileInfo = new FileInfo(request.FilePath);
 
             using(var reader = fileInfo.OpenText())
-            {
-                try {
-                    var blogPost = _fileParserService.ParseFile(fileName, reader);
-                    _blogPostRepository.Add(blogPost);
-                    _dbContext.SaveChanges();
-                }
-                catch(Exception e)
-                {
-                    //@todo: log it
-                }
+            {   
+                var blogPost = _fileParserService.ParseFile(fileName, reader);
+                _blogPostRepository.Add(blogPost);
+                _dbContext.SaveChanges();
             }
 
             return new OnNewFileResponse();
         }
-
-
     }
-
 }

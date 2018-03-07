@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.EntityFrameworkCore;
 using Markdig;
+using Microsoft.Extensions.Logging;
 
 namespace hySite
 {
@@ -25,14 +26,18 @@ namespace hySite
         private AppDbContext _dbContext;
         private IBlogPostRepository _blogPostRepository;
 
+        private readonly ILogger<FileParserService> _logger;
+
         public FileParserService(
             IFileProvider fileProvider, 
             AppDbContext db,
-            IBlogPostRepository blogPostRepository)
+            IBlogPostRepository blogPostRepository,
+            ILogger<FileParserService> logger)
         {
             _fileProvider = fileProvider;
             _dbContext = db;
             _blogPostRepository = blogPostRepository;
+            _logger = logger;
         }
 
         public void ParseExistingFiles()
@@ -54,8 +59,7 @@ namespace hySite
                     }
                     catch(FileParserServiceException ex)
                     {
-                        //@todo: add logger
-                        Console.WriteLine($"File: {fileName} Exception: {ex.Message}");
+                        _logger.LogError($"FileParserService.ParseExistingFiles Failed to parse file '{fileName}'. Error: {ex.Message}");                        
                     }
                 }
             }

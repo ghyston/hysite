@@ -1,7 +1,8 @@
 using System;
 using System.IO;
 using Microsoft.Extensions.DependencyInjection;
-
+using Microsoft.Extensions.Logging;
+using Serilog.Extensions.Logging.File;
 
 namespace hySite
 {
@@ -16,9 +17,12 @@ namespace hySite
         private readonly IServiceProvider _serviceProvider;
         private FileSystemWatcher _watcher;
 
-        public FileWatcherService(IServiceProvider serviceProvider)
+        private readonly ILogger<FileWatcherService> _logger;
+
+        public FileWatcherService(IServiceProvider serviceProvider, ILogger<FileWatcherService> logger)
         {
             _serviceProvider = serviceProvider;
+            _logger = logger;
         }
 
         public void StartWatch()
@@ -41,6 +45,7 @@ namespace hySite
 
         private void OnFileCreated(object source, FileSystemEventArgs args)
         {
+            _logger.LogInformation($"FileWatcherService.OnFileRenamed File {args.FullPath} created");
             try 
             {
                 var handler = _serviceProvider.GetService<INewFileHandler>();
@@ -51,13 +56,13 @@ namespace hySite
             }
             catch(Exception e)
             {
-                Console.WriteLine("Error: " +  e.Message);
-                //@todo: log this
+                _logger.LogError("FileWatcherService.OnFileCreated Error: " + e.Message);
             }
         }
 
         private void OnFileChanged(object source, FileSystemEventArgs args)
         {
+            _logger.LogInformation($"FileWatcherService.OnFileRenamed File {args.FullPath} changed");
             try 
             {
                 var handler = _serviceProvider.GetService<IUpdateHandler>();
@@ -68,13 +73,13 @@ namespace hySite
             }
             catch(Exception e)
             {
-                Console.WriteLine("Error: " +  e.Message);
-                //@todo: log this
+                _logger.LogError("FileWatcherService.OnFileChanged Error: " + e.Message);
             }
         }
 
         private void OnFileDeleted(object source, FileSystemEventArgs args)
         {
+            _logger.LogInformation($"FileWatcherService.OnFileRenamed File {args.FullPath} deleted");
             try 
             {
                 var handler = _serviceProvider.GetService<IDeleteHandler> ();
@@ -85,13 +90,13 @@ namespace hySite
             }
             catch(Exception e)
             {
-                Console.WriteLine("Error: " +  e.Message);
-                //@todo: log this
+                _logger.LogError("FileWatcherService.OnFileDeleted Error: " + e.Message);
             }
         }
 
         private void OnFileRenamed(object source, RenamedEventArgs args)
         {
+            _logger.LogInformation($"FileWatcherService.OnFileRenamed rename file from {args.OldFullPath} to {args.FullPath}");
             try 
             {
                 var handler = _serviceProvider.GetService<IRenameHandler> ();
@@ -103,8 +108,7 @@ namespace hySite
             }
             catch(Exception e)
             {
-                Console.WriteLine("Error: " +  e.Message);
-                //@todo: log this
+                _logger.LogError("FileWatcherService.OnFileRenamed Error: " + e.Message);
             }
         }
     }

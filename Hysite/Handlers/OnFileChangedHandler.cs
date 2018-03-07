@@ -31,19 +31,22 @@ namespace hySite
             //@todo: this is called several times.
             var fileName = Path.GetFileNameWithoutExtension(request.FilePath).ToLower();
             BlogPost oldPost = _blogPostRepository.FindPostByFileName(fileName);
-            
-            if(oldPost == null)
-            {
-                throw new Exception($"{typeof(OnFileChangedHandler)}: Cannot update post with file name '{fileName}', it is not exist.");
-            }
-
             var fileInfo = new FileInfo(request.FilePath);
 
             using(var reader = fileInfo.OpenText())
             {
 
                 var blogPost = _fileParserService.ParseFile(fileName, reader);
-                oldPost.Update(blogPost);
+
+                if(oldPost == null)
+                {
+                    _blogPostRepository.Add(blogPost);
+                }
+                else
+                {
+                    oldPost.Update(blogPost);
+                }
+                
                 _dbContext.SaveChanges();
             }
 

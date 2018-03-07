@@ -11,6 +11,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.EntityFrameworkCore;
 using Markdig;
+using Microsoft.Extensions.Logging;
+using Serilog.Extensions.Logging.File;
 
 namespace hySite
 {
@@ -33,7 +35,7 @@ namespace hySite
                 options.Conventions.AddPageRoute("/Index", "");
                 options.Conventions.AddPageRoute("/Post", "{postname:alpha}");
             });
-            
+
             //@todo: use one postsFileProvider
             var physicalProvider = _hostingEnviroment.ContentRootFileProvider;
 
@@ -55,9 +57,13 @@ namespace hySite
         public void Configure(
             IApplicationBuilder app, 
             IHostingEnvironment env, 
-            IServiceProvider serviceProvider
+            IServiceProvider serviceProvider,
+            ILoggerFactory loggerFactory
             )
         {
+
+            loggerFactory.AddFile("posts/logs/hysite-{Date}.log");
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -89,7 +95,7 @@ namespace hySite
 
             fileParser.ParseExistingFiles();
             fileWatcher.StartWatch();
-            
+
 
             /*if(env.IsDevelopment())
             {

@@ -42,6 +42,8 @@ namespace hySite
 
         public void ParseExistingFiles()
         {
+            var start = DateTime.Now;
+
             IDirectoryContents contents = _fileProvider.GetDirectoryContents("posts");
             IEnumerable<IFileInfo> files = contents.Where(f => f.Name.EndsWith(".md") && !f.IsDirectory).OrderBy(f => f.LastModified);
 
@@ -67,6 +69,12 @@ namespace hySite
             _blogPostRepository.RemoveAll();
             _blogPostRepository.Add(posts);
             _dbContext.SaveChanges();
+
+            
+            var diff = (DateTime.Now - start).ToString();
+            var count = _dbContext.BlogPosts.Count();
+            _logger.LogInformation($"Parsing {count} posts, took {diff} time");
+            
         }
 
 

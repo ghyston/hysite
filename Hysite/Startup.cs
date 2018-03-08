@@ -88,21 +88,11 @@ namespace hySite
                     template: "{controller}/{action=Index}/{id?}");
             });
 
-            //var start = DateTime.Now;
-
             var fileParser = serviceProvider.GetService<IFileParserService>();
             var fileWatcher = serviceProvider.GetService<IFileWatcherSingleton>();
 
             fileParser.ParseExistingFiles();
             fileWatcher.StartWatch();
-
-
-            /*if(env.IsDevelopment())
-            {
-                var diff = (DateTime.Now - start).ToString();
-                var count = db.BlogPosts.Count();
-                Console.WriteLine($"Parsing {count} posts, took {diff} time");
-            }*/
         }
     }
 }

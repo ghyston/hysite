@@ -8,14 +8,20 @@ using Markdig;
 
 namespace hySite
 {
-    public class PostModel : PageModel
+    public class PostPageModel : PageModel
     {
         private readonly IBlogPostRepository _blogPostRepository;
 
         [BindProperty]
         public BlogPost BlogPost { get; set; }
 
-        public PostModel(IBlogPostRepository blogPostRepository)
+        [BindProperty]
+        public string NextPostFileName {get; set;}
+
+        [BindProperty]
+        public string PrevPostFileName {get; set;}
+
+        public PostPageModel(IBlogPostRepository blogPostRepository)
         {
             _blogPostRepository = blogPostRepository;
         }
@@ -27,6 +33,9 @@ namespace hySite
             {
                 return RedirectToPage("/LostAndNotFound");
             }
+
+            NextPostFileName = _blogPostRepository.FindNextPostFileName(BlogPost.Created);
+            PrevPostFileName = _blogPostRepository.FindPrevPostFileName(BlogPost.Created);
 
             return Page();
         }

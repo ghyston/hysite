@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System;
 
 namespace hySite
 {
@@ -53,6 +54,25 @@ namespace hySite
         public void RemoveAll()
         {
             _dbContext.BlogPosts.RemoveRange(_dbContext.BlogPosts);
+        }
+
+        public string FindNextPostFileName(DateTime time)
+        {
+            return _dbContext.BlogPosts
+                .Where(bp => bp.Created > time)
+                .OrderBy(bp => bp.Created)
+                .Select(bp => bp.FileName)
+                .FirstOrDefault();
+        }
+
+        public string FindPrevPostFileName(DateTime time)
+        {
+            return _dbContext.BlogPosts
+                .Where(bp => bp.Created < time)
+                .OrderByDescending(bp => bp.Created)
+                .Select(bp => bp.FileName)
+                .FirstOrDefault();
+
         }
     }
 }

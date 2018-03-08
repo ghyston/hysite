@@ -1,8 +1,18 @@
 @page "{postName}"
 
-@model PostModel
+@model PostPageModel
 
 <h2>@Html.Raw(@Model.BlogPost.Title)</h2>
 <p style="font-size: 12px; color: gray;">@Html.Raw(@Model.BlogPost.Created)</p>
 @Html.Raw(@Model.BlogPost.HtmlContent)
 <hr />   
+
+@if(!string.IsNullOrEmpty(@Model.NextPostFileName) )
+{
+    <a href="@Html.Raw(@Model.NextPostFileName)">Next</a>
+}
+
+@if(!string.IsNullOrEmpty(@Model.PrevPostFileName) )
+{
+    <a href="@Html.Raw(@Model.PrevPostFileName)">Prev</a>
+}

@@ -36,3 +36,7 @@ Dockerfile
 build.sh
 publish.sh
 run.sh
+
+#temp posts
+posts/
+*.md

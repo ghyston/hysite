@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace hySite
@@ -11,5 +12,7 @@ namespace hySite
         int PostsCount();
         void Remove(BlogPost post);
         void RemoveAll();
+        string FindNextPostFileName(DateTime time);
+        string FindPrevPostFileName(DateTime time);
     }
 }

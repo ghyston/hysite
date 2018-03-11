@@ -33,7 +33,7 @@ namespace hySite
         {
             services.AddMvc().AddRazorPagesOptions(options => {
                 options.Conventions.AddPageRoute("/Index", "");
-                options.Conventions.AddPageRoute("/Post", "{postname:alpha}");
+                options.Conventions.AddPageRoute("/Post", "{postname}");
             });
 
             //@todo: use one postsFileProvider

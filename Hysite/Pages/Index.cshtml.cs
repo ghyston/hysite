@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Configuration;
 
 namespace hySite
 {
@@ -17,14 +18,17 @@ namespace hySite
         private const int POSTS_PER_PAGE = 5;
 
         private readonly IBlogPostRepository _blogPostRepository;
+        private readonly IConfiguration _configuration;
 
-        public IndexModel(IBlogPostRepository blogPostRepository)
+        public IndexModel(IBlogPostRepository blogPostRepository, IConfiguration configuration)
         {
             _blogPostRepository = blogPostRepository;
+            _configuration = configuration;
         }
 
         public void OnGet(int pageNumber)
         {
+            //const int POSTS_PER_PAGE = (Int32.Parse() ?? 5) as int;
             var pagesCount = _blogPostRepository.PostsCount() / POSTS_PER_PAGE;
             this.PageNum = pageNumber;            
             this.PrevPage = pageNumber == 0 ? (int?)null : (pageNumber - 1);            

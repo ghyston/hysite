@@ -15,7 +15,7 @@ namespace hySite
         public int? NextPage { get; set; }
         public int? PrevPage { get; set; } //@todo: make it string? to hide "/0" at first page
         
-        private const int POSTS_PER_PAGE = 5;
+        private static int POSTS_PER_PAGE = 5;
 
         private readonly IBlogPostRepository _blogPostRepository;
         private readonly IConfiguration _configuration;
@@ -24,16 +24,25 @@ namespace hySite
         {
             _blogPostRepository = blogPostRepository;
             _configuration = configuration;
+
+            POSTS_PER_PAGE = Int32.Parse(_configuration["PostsPerPage"]);
         }
 
-        public void OnGet(int pageNumber)
-        {
-            //const int POSTS_PER_PAGE = (Int32.Parse() ?? 5) as int;
+        public IActionResult OnGet(int pageNumber)
+        {   
             var pagesCount = _blogPostRepository.PostsCount() / POSTS_PER_PAGE;
+
+            if(pageNumber > pagesCount)
+            {
+                return RedirectToPage("/LostAndNotFound");
+            }
+
             this.PageNum = pageNumber;            
             this.PrevPage = pageNumber == 0 ? (int?)null : (pageNumber - 1);            
             this.NextPage = pageNumber >= pagesCount ? (int?)null : (pageNumber + 1);
             this.Posts = _blogPostRepository.FindPostsByPage(this.PageNum, POSTS_PER_PAGE).ToList();
+
+            return Page();
         }
     }
 }

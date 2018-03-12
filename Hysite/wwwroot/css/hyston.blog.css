@@ -1,0 +1,33 @@
+body {    
+    margin: 1rem auto 1rem;
+  }
+
+  hr {
+      width: 85%;
+  }
+
+  a,
+  a:visited {
+    text-decoration: none;
+  }
+
+  .blogTitle {
+    font-family: monospace;
+    font-size: 30px;
+    color: lightgrey;
+    text-decoration:none
+  }
+
+  .blogTitleItem {
+    font-family: monospace;
+    font-size: 15px; 
+    color: darkcyan; 
+    text-decoration:none
+  }
+  
+  .navigation {
+    font-family: monospace;
+    font-size: 20px; 
+    color: darkcyan; 
+    text-decoration:none
+  }

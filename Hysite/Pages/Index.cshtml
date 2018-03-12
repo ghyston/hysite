@@ -4,18 +4,18 @@
 
 @foreach (var item in @Model.Posts) {
 
-    <h2><a href="@Html.Raw(item.FileName)">@Html.Raw(item.Title)</a></h2>
-    <p style="font-size: 12px; color: gray;">@Html.Raw(item.Created)</p>
+    <h3><a href="@Html.Raw(item.FileName)">@Html.Raw(item.Title)</a></h3>
+    <p style="font-size: 12px; color: gray;">@Html.Raw(item.Created.ToString("yyyy-MM-dd HH:mm"))</p>
     @Html.Raw(item.HtmlContent)
     <hr />          
 }
 
 @if(@Model.PrevPage != null)
 {
-    <a style="float: left" href="/@Model.PrevPage">Previous</a>
+    <a class="navigation" style="float: left" href="/@Model.PrevPage">Previous</a>
 }
 
 @if(@Model.NextPage != null)
 {
-    <a style="float: right" href="/@Model.NextPage">Next</a>
+    <a class="navigation" style="float: right" href="/@Model.NextPage">Next</a>
 }

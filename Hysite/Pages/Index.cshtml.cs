@@ -30,7 +30,9 @@ namespace hySite
 
         public IActionResult OnGet(int pageNumber)
         {   
-            var pagesCount = _blogPostRepository.PostsCount() / POSTS_PER_PAGE;
+            int postsCount = _blogPostRepository.PostsCount();
+            var pagesCount = postsCount / POSTS_PER_PAGE 
+                - (postsCount % POSTS_PER_PAGE == 0 ? 1 : 0);
 
             if(pageNumber > pagesCount)
             {

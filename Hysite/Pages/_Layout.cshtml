@@ -5,12 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - hySite</title>
     <link rel="stylesheet" href="/css/retro.css">
+    <link rel="stylesheet" href="/css/hyston.blog.css">
 </head>
 <body>
-    <!-- todo: fix layout here -->
-    <a style="font-family: monospace; font-size: 30px; color: darkcyan; text-decoration:none" href="#">Hyston blog</a>
-    <br/>
-    <a style="font-family: monospace; font-size: 20px; color: darkcyan; text-decoration:none" href="/About">About</a>
+    <div style="width: 100%; text-align: center">
+        <a class="blogTitle" href="/">Hyston blog</a>
+        <br/>
+        <a class="blogTitleItem" href="/About">About</a>
+    </div>
+    <hr/>
     @RenderBody()
 </body>
 </html>

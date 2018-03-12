@@ -4,10 +4,7 @@
 
 @foreach (var item in @Model.Posts) {
 
-    <h3><a href="@Html.Raw(item.FileName)">@Html.Raw(item.Title)</a></h3>
-    <p style="font-size: 12px; color: gray;">@Html.Raw(item.Created.ToString("yyyy-MM-dd HH:mm"))</p>
-    @Html.Raw(item.HtmlContent)
-    <hr />          
+    @Html.Partial("BlogEntry", item)
 }
 
 @if(@Model.PrevPage != null)

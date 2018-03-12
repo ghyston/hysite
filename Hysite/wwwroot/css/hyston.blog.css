@@ -12,22 +12,22 @@ body {
   }
 
   .blogTitle {
-    font-family: monospace;
-    font-size: 30px;
-    color: lightgrey;
-    text-decoration:none
+    font-family: monospace !important;
+    font-size: 30px !important;
+    color: lightgrey !important;
+    text-decoration:none !important;
   }
 
   .blogTitleItem {
-    font-family: monospace;
-    font-size: 15px; 
-    color: darkcyan; 
-    text-decoration:none
+    font-family: monospace !important;
+    font-size: 15px !important; 
+    color: darkcyan !important; 
+    text-decoration:none !important;
   }
   
   .navigation {
-    font-family: monospace;
-    font-size: 20px; 
-    color: darkcyan; 
-    text-decoration:none
+    font-family: monospace !important;
+    font-size: 20px !important; 
+    color: darkcyan !important; 
+    text-decoration:none !important;
   }

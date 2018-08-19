@@ -24,7 +24,7 @@ namespace hySite
 
         public Startup(IConfiguration configuration, IHostingEnvironment env)
         {
-            _configuration = configuration;
+            _configuration = configuration;  
             _hostingEnviroment = env;
         }
 

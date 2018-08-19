@@ -5,6 +5,7 @@ using Xunit;
 using Moq;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace hySite.Tests
 {
@@ -14,6 +15,8 @@ namespace hySite.Tests
 
         private Mock<IFileProvider> MockFileProvider = new Mock<IFileProvider>();
         private Mock<IBlogPostRepository> MockBlogRepository = new Mock<IBlogPostRepository>();
+
+        private Mock<ILogger<FileParserService>> MockLogger = new Mock<ILogger<FileParserService>>();
 
         private AppDbContext _dbContext {get; set;}
 
@@ -26,7 +29,8 @@ namespace hySite.Tests
             _service = new FileParserService(
                 MockFileProvider.Object,
                 _dbContext,
-                MockBlogRepository.Object
+                MockBlogRepository.Object,
+                MockLogger.Object
             );
         }
 
@@ -59,7 +63,7 @@ namespace hySite.Tests
         gogog";
             var reader = CreateStringReader(fileContent);
             Exception ex = Assert.Throws<FileParserServiceException>(() => _service.ParseFile(fileName, reader));
-            Assert.StartsWith("gogog is not in the correct date format", ex.Message); 
+            Assert.StartsWith("'gogog' is not in the correct date format", ex.Message); 
         }
 
         [Fact]
@@ -70,7 +74,7 @@ namespace hySite.Tests
         12/12/2013";
             var reader = CreateStringReader(fileContent);
             Exception ex = Assert.Throws<FileParserServiceException>(() => _service.ParseFile(fileName, reader));
-            Assert.StartsWith("12/12/2013 is not in the correct date format", ex.Message); 
+            Assert.StartsWith("'12/12/2013' is not in the correct date format", ex.Message); 
         }
 
         [Fact]

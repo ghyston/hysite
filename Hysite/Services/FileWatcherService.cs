@@ -6,7 +6,7 @@ using Serilog.Extensions.Logging.File;
 
 namespace hySite
 {
-
+    //@todo: update handler register system!
     using INewFileHandler = IHandler<OnNewFileRequest, OnNewFileResponse>;
     using IRenameHandler = IHandler<OnFileRenamedRequest, OnFileRenamedResponse>;
     using IDeleteHandler = IHandler<OnFileDeletedRequest, OnFileDeletedResponse>;

@@ -11,5 +11,6 @@ namespace hySite
         }
 
         public DbSet<BlogPost> BlogPosts { get; set; }
+        public DbSet<ViewStatistic> ViewStatistics { get; set; }
     }
 }

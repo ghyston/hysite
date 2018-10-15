@@ -5,9 +5,14 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace hySite
 {
+    //@todo: update handler register system!
+    using IncrementViewsHandler = IHandler<IncrementViewsHandlerRequest, IncrementViewsHandlerResponse>;
+
+
     public class IndexModel : PageModel
     {
         public List<BlogPost> Posts {get; private set; } = new List<BlogPost>();
@@ -18,12 +23,14 @@ namespace hySite
         private static int POSTS_PER_PAGE = 5;
 
         private readonly IBlogPostRepository _blogPostRepository;
+        private readonly IServiceProvider _serviceProvider;
         private readonly IConfiguration _configuration;
 
-        public IndexModel(IBlogPostRepository blogPostRepository, IConfiguration configuration)
+        public IndexModel(IBlogPostRepository blogPostRepository, IConfiguration configuration, IServiceProvider serviceProvider)
         {
             _blogPostRepository = blogPostRepository;
             _configuration = configuration;
+            _serviceProvider = serviceProvider;
 
             POSTS_PER_PAGE = Int32.Parse(_configuration["PostsPerPage"]);
         }
@@ -43,6 +50,10 @@ namespace hySite
             this.PrevPage = pageNumber == 0 ? (int?)null : (pageNumber - 1);            
             this.NextPage = pageNumber >= pagesCount ? (int?)null : (pageNumber + 1);
             this.Posts = _blogPostRepository.FindPostsByPage(this.PageNum, POSTS_PER_PAGE).ToList();
+
+            var handler = _serviceProvider.GetService<IncrementViewsHandler>();
+                (handler as IncrementViewsHandler)?
+                .Handle(new IncrementViewsHandlerRequest());
 
             return Page();
         }

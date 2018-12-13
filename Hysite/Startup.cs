@@ -93,8 +93,7 @@ namespace hySite
             var fileParser = serviceProvider.GetService<IFileParserService>();
             var fileWatcher = serviceProvider.GetService<IFileWatcherSingleton>();
 
-            fileParser.ParseExistingFiles();
-            fileWatcher.StartWatch();
+            fileParser.ParseExistingFiles();            
         }
     }
 }

@@ -43,6 +43,7 @@ namespace hySite
             services.AddDbContext<AppDbContext>(options => options.UseInMemoryDatabase("db"));
             services.AddScoped<IBlogPostRepository, BlogPostRepository>(); //Scoped has lifetime per request
             services.AddScoped<IViewStatisticRepository, ViewStatisticRepository>(); //Scoped has lifetime per request
+            services.AddTransient<IGitRepository, GitRepository>();
             services.AddTransient<IFileParserService, FileParserService>(); //Transient created each time
             services.AddSingleton<IFileWatcherSingleton, FileWatcherService>();
             
@@ -60,7 +61,8 @@ namespace hySite
             IApplicationBuilder app, 
             IHostingEnvironment env, 
             IServiceProvider serviceProvider,
-            ILoggerFactory loggerFactory
+            ILoggerFactory loggerFactory,
+            IGitRepository gitRepository
             )
         {
 
@@ -89,6 +91,8 @@ namespace hySite
                     name: "default",
                     template: "{controller}/{action=Index}/{id?}");
             });
+
+            gitRepository.Clone();
 
             var fileParser = serviceProvider.GetService<IFileParserService>();
             var fileWatcher = serviceProvider.GetService<IFileWatcherSingleton>();

@@ -62,11 +62,14 @@ namespace hySite
             IHostingEnvironment env, 
             IServiceProvider serviceProvider,
             ILoggerFactory loggerFactory,
-            IGitRepository gitRepository
-            )
+            IGitRepository gitRepository,
+            IConfiguration configuration)
         {
+            var logsPath = configuration["LogsLocalPath"];
+            if (!Directory.Exists(logsPath))
+                Directory.CreateDirectory(logsPath);
 
-            loggerFactory.AddFile("posts/logs/hysite-{Date}.log");
+            loggerFactory.AddFile(logsPath + "/hysite-{Date}.log");
 
             if (env.IsDevelopment())
             {
@@ -77,11 +80,27 @@ namespace hySite
                 app.UseExceptionHandler("/Error");
             }
 
-            app.UseStaticFiles();
+            var postsPath = configuration["PostsLocalPath"];
+            if(configuration["loadFromGit"].Equals("true"))
+            {
+                if (!Directory.Exists(postsPath))
+                    Directory.CreateDirectory(postsPath);
+                else
+                    Directory.Delete(postsPath, recursive: true);
+                gitRepository.Clone();
+            }
+            
+            var postsFullPath = Path.Combine(Directory.GetCurrentDirectory(), postsPath);
+            var imagesFullPth = Path.Combine(postsFullPath, "img");
 
             app.UseStaticFiles(new StaticFileOptions()
             {                
-                FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "posts")),
+                FileProvider = new PhysicalFileProvider(postsFullPath),
+                RequestPath = new PathString("")
+            });
+            app.UseStaticFiles(new StaticFileOptions()
+            {                
+                FileProvider = new PhysicalFileProvider(imagesFullPth),
                 RequestPath = new PathString("")
             });
 
@@ -92,11 +111,7 @@ namespace hySite
                     template: "{controller}/{action=Index}/{id?}");
             });
 
-            gitRepository.Clone();
-
             var fileParser = serviceProvider.GetService<IFileParserService>();
-            var fileWatcher = serviceProvider.GetService<IFileWatcherSingleton>();
-
             fileParser.ParseExistingFiles();            
         }
     }

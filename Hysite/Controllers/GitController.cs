@@ -10,11 +10,20 @@ namespace hySite
 {
     public class GitController : Controller 
     {
+        private readonly IGitRepository _gitRepository;
+        private readonly IFileParserService _fileParserService;
+
+        public GitController(IGitRepository gitRepository, IFileParserService fileParserService)
+        {
+            _gitRepository = gitRepository;
+            _fileParserService = fileParserService;
+        }
+
         [Route("update")]
         public IActionResult UpdatePosts()
         {
-            
-            //@todo
+            _gitRepository.Pull();
+            _fileParserService.ParseExistingFiles();
             return Ok();
         }
     }

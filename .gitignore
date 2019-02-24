@@ -38,5 +38,6 @@ publish.sh
 run.sh
 
 #temp posts
-posts/
-*.md
+**/posts/
+**/log/
+**/*.md

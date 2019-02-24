@@ -8,6 +8,7 @@ using Microsoft.Extensions.FileProviders;
 using Microsoft.EntityFrameworkCore;
 using Markdig;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Configuration;
 
 namespace hySite
 {
@@ -25,6 +26,7 @@ namespace hySite
         private IFileProvider _fileProvider;
         private AppDbContext _dbContext;
         private IBlogPostRepository _blogPostRepository;
+        private IConfiguration _configuration;
 
         private readonly ILogger<FileParserService> _logger;
 
@@ -32,20 +34,33 @@ namespace hySite
             IFileProvider fileProvider, 
             AppDbContext db,
             IBlogPostRepository blogPostRepository,
-            ILogger<FileParserService> logger)
+            ILogger<FileParserService> logger,
+            IConfiguration configuration)
         {
             _fileProvider = fileProvider;
             _dbContext = db;
             _blogPostRepository = blogPostRepository;
             _logger = logger;
+            _configuration = configuration;
+        }
+
+        private void LoadFiles(string path, ref List<IFileInfo> result)
+        {
+            var contents = _fileProvider.GetDirectoryContents(path);
+            var filesDirectly = contents.Where(f => f.Name.EndsWith(".md") && !f.IsDirectory).OrderBy(f => f.LastModified).ToList();
+            result.AddRange(filesDirectly);
+
+            var subDirectories = contents.Where(f => f.IsDirectory);
+            foreach(var subdir in subDirectories)
+                LoadFiles(Path.Combine(path, subdir.Name), ref result);
         }
 
         public void ParseExistingFiles()
         {
             var start = DateTime.Now;
 
-            IDirectoryContents contents = _fileProvider.GetDirectoryContents("posts");
-            IEnumerable<IFileInfo> files = contents.Where(f => f.Name.EndsWith(".md") && !f.IsDirectory).OrderBy(f => f.LastModified);
+            var files = new List<IFileInfo>();
+            LoadFiles(_configuration["PostsLocalPath"], ref files);
 
             List<BlogPost> posts = new List<BlogPost>();
 
@@ -69,15 +84,11 @@ namespace hySite
             _blogPostRepository.RemoveAll();
             _blogPostRepository.Add(posts);
             _dbContext.SaveChanges();
-
             
             var diff = (DateTime.Now - start).ToString();
             var count = _dbContext.BlogPosts.Count();
             _logger.LogInformation($"Parsing {count} posts, took {diff} time");
-            
         }
-
-
 
         public BlogPost ParseFile(string fileName, StreamReader streamReader)
         {

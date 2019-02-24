@@ -93,6 +93,7 @@ namespace hySite
             var postsFullPath = Path.Combine(Directory.GetCurrentDirectory(), postsPath);
             var imagesFullPth = Path.Combine(postsFullPath, "img");
 
+            app.UseStaticFiles();
             app.UseStaticFiles(new StaticFileOptions()
             {                
                 FileProvider = new PhysicalFileProvider(postsFullPath),

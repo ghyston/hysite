@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 using LibGit2Sharp;
 using LibGit2Sharp.Handlers;
 using Microsoft.Extensions.Configuration;
@@ -12,6 +14,8 @@ public class GitRepository : IGitRepository
     private readonly IConfiguration _configuration;
 
     private readonly ILogger<IGitRepository> _logger;
+
+    private const string Sha1Prefix = "sha1=";
 
     private class SettingsDto
     {
@@ -108,5 +112,50 @@ public class GitRepository : IGitRepository
         {
             _logger.LogError($"GitRepository.Pull Exception: {e}");
         }
+    }
+
+    // mostly copied from https://www.jerriepelser.com/blog/create-github-webhook-aspnetcore-aws-lambda/
+    public bool IsSecretValid(string signatureWithPrefix, string payload)
+    {
+        var token = _configuration["github:hookSecret"];
+
+        if (string.IsNullOrWhiteSpace(payload))
+        {
+            _logger.LogError($"GitRepository.IsSecretValid Payload is empty");
+            return false;
+        }
+
+        if (string.IsNullOrWhiteSpace(signatureWithPrefix))
+        {
+            _logger.LogError($"GitRepository.IsSecretValid Signature is empty");
+            return false;
+        }
+
+        if (signatureWithPrefix.StartsWith(Sha1Prefix, StringComparison.OrdinalIgnoreCase))
+        {
+            var signature = signatureWithPrefix.Substring(Sha1Prefix.Length);
+            var secret = Encoding.ASCII.GetBytes(token);
+            var payloadBytes = Encoding.ASCII.GetBytes(payload);
+
+            using (var hmacsha1 = new HMACSHA1(secret))
+            {
+                var hash = hmacsha1.ComputeHash(payloadBytes);
+                var hashString = ToHexString(hash);
+                return (hashString.Equals(signature));
+            }
+        }
+
+        return false;
+    }
+
+    private static string ToHexString(byte[] bytes)
+    {
+        StringBuilder builder = new StringBuilder(bytes.Length * 2);
+        foreach (byte b in bytes)
+        {
+            builder.AppendFormat("{0:x2}", b);
+        }
+
+        return builder.ToString();
     }
 }

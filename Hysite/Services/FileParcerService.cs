@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.EntityFrameworkCore;
 using Markdig;
+using Markdig.SyntaxHighlighting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Configuration;
 
@@ -126,8 +127,12 @@ namespace hySite
                 unusedMetaDataLine = streamReader.ReadLine()?.Trim();
             }
 
+            var pipeline = new MarkdownPipelineBuilder()
+                .UseAdvancedExtensions()
+                .UseSyntaxHighlighting()
+                .Build();
             var mdContent = streamReader.ReadToEnd();
-            var htmlContent = Markdown.ToHtml(mdContent);
+            var htmlContent = Markdown.ToHtml(mdContent, pipeline);
 
             return new BlogPost()
             {

@@ -80,7 +80,7 @@ namespace hySite
                 app.UseExceptionHandler("/Error");
             }
 
-            var postsPath = configuration["PostsLocalPath"];
+             var postsPath = configuration["PostsLocalPath"];
             if(configuration["loadFromGit"].Equals("true"))
             {
                 if (!Directory.Exists(postsPath))

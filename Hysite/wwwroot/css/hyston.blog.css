@@ -31,3 +31,11 @@ body {
     color: darkcyan !important; 
     text-decoration:none !important;
   }
+
+  pre {    
+    overflow-x: auto;
+  }
+
+  p {
+    text-indent: 20px;
+  }

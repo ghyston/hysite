@@ -3,9 +3,7 @@ using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Globalization;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
-using Microsoft.EntityFrameworkCore;
 using Markdig;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Configuration;
@@ -126,8 +124,13 @@ namespace hySite
                 unusedMetaDataLine = streamReader.ReadLine()?.Trim();
             }
 
+            var pipeline = new MarkdownPipelineBuilder()
+                .UseAdvancedExtensions()
+                .UseFootnotes()
+                .Build();
+
             var mdContent = streamReader.ReadToEnd();
-            var htmlContent = Markdown.ToHtml(mdContent);
+            var htmlContent = Markdown.ToHtml(mdContent, pipeline);
 
             return new BlogPost()
             {

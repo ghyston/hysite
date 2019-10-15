@@ -113,7 +113,13 @@ namespace hySite
             });
 
             var fileParser = serviceProvider.GetService<IFileParserService>();
-            fileParser.ParseExistingFiles();            
+            fileParser.ParseExistingFiles();        
+
+            if (env.IsDevelopment())
+            {
+                var fileWatcher = serviceProvider.GetService<IFileWatcherSingleton>();
+                fileWatcher.StartWatch();
+            }
         }
     }
 }

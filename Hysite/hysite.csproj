@@ -5,7 +5,9 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="LibGit2Sharp" Version="0.25.4" />
-    <PackageReference Include="Markdig" />
+    <PackageReference Include="Markdig">
+      <Version>0.17.1</Version>
+    </PackageReference>
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.2.0" />
     <PackageReference Include="Serilog.Extensions.Logging.File" />
   </ItemGroup>

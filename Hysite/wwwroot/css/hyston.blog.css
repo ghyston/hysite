@@ -32,6 +32,10 @@ body {
     text-decoration:none !important;
   }
 
+  .copyright {
+    color: grey;
+  }
+
   pre {    
     overflow-x: auto;
   }

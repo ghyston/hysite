@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 class UploadFileController : Controller
 {
+    //@todo: is it used?
     [HttpPost("UploadFiles")]
     public async Task<IActionResult> Post(List<IFormFile> files)
     {

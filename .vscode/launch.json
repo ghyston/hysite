@@ -10,7 +10,7 @@
             "request": "launch",
             "preLaunchTask": "build",
             // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceFolder}/Hysite/bin/Debug/netcoreapp2.2/hysite.dll",
+            "program": "${workspaceFolder}/Hysite/bin/Debug/netcoreapp3.1/hysite.dll",
             "args": [],
             "cwd": "${workspaceFolder}/Hysite",
             "stopAtEntry": false,

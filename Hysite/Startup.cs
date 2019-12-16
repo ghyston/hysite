@@ -4,40 +4,43 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
-using Microsoft.EntityFrameworkCore;
-using Markdig;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.EntityFrameworkCore;
 using Serilog.Extensions.Logging.File;
+using Markdig;
 
 namespace hySite
 {
     public class Startup
     {
-        private IHostingEnvironment _hostingEnviroment;
+        private IWebHostEnvironment _webHostingEnviroment;
         private IConfiguration _configuration;
 
 
-        public Startup(IConfiguration configuration, IHostingEnvironment env)
+        public Startup(IConfiguration configuration, IWebHostEnvironment env)
         {
             _configuration = configuration;  
-            _hostingEnviroment = env;
+            _webHostingEnviroment = env;
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc().AddRazorPagesOptions(options => {
+            services.AddControllers();
+            services.AddRazorPages()
+                .AddRazorPagesOptions(options => {
                 options.Conventions.AddPageRoute("/Index", "");
                 options.Conventions.AddPageRoute("/Post", "{postname}");
             });
 
             //@todo: use one postsFileProvider
-            var physicalProvider = _hostingEnviroment.ContentRootFileProvider;
+            var physicalProvider = _webHostingEnviroment.ContentRootFileProvider;
 
             services.AddSingleton<IFileProvider>(physicalProvider);
             services.AddDbContext<AppDbContext>(options => options.UseInMemoryDatabase("db"));
@@ -59,7 +62,7 @@ namespace hySite
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(
             IApplicationBuilder app, 
-            IHostingEnvironment env, 
+            IWebHostEnvironment environment,
             IServiceProvider serviceProvider,
             ILoggerFactory loggerFactory,
             IGitRepository gitRepository,
@@ -71,7 +74,7 @@ namespace hySite
 
             loggerFactory.AddFile(logsPath + "/hysite-{Date}.log");
 
-            if (env.IsDevelopment())
+            if (environment.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
@@ -81,7 +84,7 @@ namespace hySite
             }
 
             var postsPath = configuration["PostsLocalPath"];
-            if(configuration["loadFromGit"].Equals("true"))
+            if(bool.Parse(configuration["loadFromGit"]))
             {
                 if (!Directory.Exists(postsPath))
                     Directory.CreateDirectory(postsPath);
@@ -105,17 +108,20 @@ namespace hySite
                 RequestPath = new PathString("")
             });
 
-            app.UseMvc(routes =>
+            app.UseRouting();
+            app.UseEndpoints(endpoints => 
             {
-                routes.MapRoute(
+                endpoints.MapRazorPages();
+                endpoints.MapControllerRoute(
                     name: "default",
-                    template: "{controller}/{action=Index}/{id?}");
+                    pattern: "{controller=Home}/{action=Index}/{id?}"
+                );
             });
 
             var fileParser = serviceProvider.GetService<IFileParserService>();
             fileParser.ParseExistingFiles();        
 
-            if (env.IsDevelopment())
+            if (environment.IsDevelopment())
             {
                 var fileWatcher = serviceProvider.GetService<IFileWatcherSingleton>();
                 fileWatcher.StartWatch();

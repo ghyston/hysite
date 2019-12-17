@@ -85,13 +85,14 @@ namespace hySite
 
             var postsPath = configuration["PostsLocalPath"];
 
-            if(configuration["loadFromGit"].Equals("true"))
+            var configParsed = bool.TryParse(configuration["loadFromGit"], out bool loadFromGit);
+            Console.WriteLine("Доколе?!");
+            if(configParsed && loadFromGit)
             {
                 if(Directory.Exists(postsPath))
                     Directory.Delete(postsPath, recursive: true);
 
-                if(gitRepository.Clone().IsSuccessfull())
-                    postsDirExist = true;
+                gitRepository.Clone();
             }
             
             var postsFullPath = Path.Combine(Directory.GetCurrentDirectory(), postsPath);

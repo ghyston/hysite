@@ -61,6 +61,8 @@ public class GitRepository : IGitRepository
 
     public IResult Clone()
     {
+        _logger.LogInformation("Cloning repository..");
+        Console.WriteLine("Cloning repo..");
         var settings = LoadSettings();
         var error = settings.Validate();
         if(error != null)
@@ -74,11 +76,9 @@ public class GitRepository : IGitRepository
             co.BranchName = "publish";
             Repository.Clone(settings.GitUrl, settings.LocalPath, co);
         }
-        catch (System.Exception error)
+        catch (System.Exception exception)
         {
-            //var message = "WTFF?";
-            //return Result.Error(message);
-            //return this.Error("Clone", "message");
+            return this.Error("Clone", $"Exception: {exception}");
         }
         return Result.Success();
     }
@@ -105,9 +105,9 @@ public class GitRepository : IGitRepository
                 Commands.Pull(repo, signature, options);
             }            
         }
-        catch (System.Exception e)
+        catch (System.Exception exception)
         {
-            return this.Error("Pull", $"Exception: {e}");
+            return this.Error("Pull", $"Exception: {exception}");
         }
         return Result.Success();
     }
@@ -159,7 +159,6 @@ public class GitRepository : IGitRepository
 
     private IResult Error(string method, string message)
     {
-        //@todo: use MethodBase.GetCurrentMethod 
         var messageWithPath = $"GitRepository.{method}: {message}";
         _logger.LogError(messageWithPath);
         return Result.Error(messageWithPath);

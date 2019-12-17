@@ -84,17 +84,24 @@ namespace hySite
             }
 
             var postsPath = configuration["PostsLocalPath"];
-            if(bool.Parse(configuration["loadFromGit"]))
+
+            if(configuration["loadFromGit"].Equals("true"))
             {
-                if (!Directory.Exists(postsPath))
-                    Directory.CreateDirectory(postsPath);
-                else
+                if(Directory.Exists(postsPath))
                     Directory.Delete(postsPath, recursive: true);
-                gitRepository.Clone();
+
+                if(gitRepository.Clone().IsSuccessfull())
+                    postsDirExist = true;
             }
             
             var postsFullPath = Path.Combine(Directory.GetCurrentDirectory(), postsPath);
             var imagesFullPth = Path.Combine(postsFullPath, "img");
+
+            if(!Directory.Exists(postsFullPath))
+                Directory.CreateDirectory(postsFullPath);
+
+            if(!Directory.Exists(imagesFullPth))
+                Directory.CreateDirectory(imagesFullPth);
 
             app.UseStaticFiles();
             app.UseStaticFiles(new StaticFileOptions()

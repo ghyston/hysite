@@ -59,14 +59,15 @@ public class GitRepository : IGitRepository
         };
     }
 
-    public void Clone()
+    public IResult Clone()
     {
         var settings = LoadSettings();
         var error = settings.Validate();
         if(error != null)
         {
-            _logger.LogError($"GitRepository.Clone Failed to load settings: {error}");
-            return;
+            var error = $"GitRepository.Clone Failed to load settings: {error}";
+            _logger.LogError(error);
+            return Result.Error(error);
         }
 
         try
@@ -77,21 +78,21 @@ public class GitRepository : IGitRepository
             co.BranchName = "publish";
             Repository.Clone(settings.GitUrl, settings.LocalPath, co);
         }
-        catch (System.Exception e)
+        catch (System.Exception error)
         {
-            _logger.LogError($"GitRepository.Clone Exception: {e}");
+            var error = $"GitRepository.Clone Exception: {error}";
+            _logger.LogError(error);
+            return Result.Error(error);
         }
+        return Result.Success();
     }
 
-    public void Pull()
+    public IResult Pull()
     {
         var settings = LoadSettings();
         var error = settings.Validate();
-        if(error != null)
-        {
-            _logger.LogError($"GitRepository.Pull Failed to load settings: {error}");
-            return;
-        }
+        if(error != null) 
+            return this.Error("Pull", $"Failed to load settings: {error}");
 
         try
         {
@@ -110,8 +111,9 @@ public class GitRepository : IGitRepository
         }
         catch (System.Exception e)
         {
-            _logger.LogError($"GitRepository.Pull Exception: {e}");
+            return this.Error("Pull", $"Exception: {e}");
         }
+        return Result.Success();
     }
 
     // mostly copied from https://www.jerriepelser.com/blog/create-github-webhook-aspnetcore-aws-lambda/
@@ -157,5 +159,12 @@ public class GitRepository : IGitRepository
         }
 
         return builder.ToString();
+    }
+
+    private IResult Error(string method, string message)
+    {
+        var messageWithPath = $"GitRepository.{method}: {message}";
+        _logger.LogError(messageWithPath);
+        return Result.Error(messageWithPath);
     }
 }

@@ -86,7 +86,6 @@ namespace hySite
             var postsPath = configuration["PostsLocalPath"];
 
             var configParsed = bool.TryParse(configuration["loadFromGit"], out bool loadFromGit);
-            Console.WriteLine("Доколе?!");
             if(configParsed && loadFromGit)
             {
                 if(Directory.Exists(postsPath))

@@ -62,7 +62,7 @@ public class GitRepository : IGitRepository
     public IResult Clone()
     {
         _logger.LogInformation("Cloning repository..");
-        Console.WriteLine("Cloning repo..");
+        
         var settings = LoadSettings();
         var error = settings.Validate();
         if(error != null)

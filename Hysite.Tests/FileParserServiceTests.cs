@@ -6,6 +6,7 @@ using Moq;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Configuration;
 
 namespace hySite.Tests
 {
@@ -17,6 +18,8 @@ namespace hySite.Tests
         private Mock<IBlogPostRepository> MockBlogRepository = new Mock<IBlogPostRepository>();
 
         private Mock<ILogger<FileParserService>> MockLogger = new Mock<ILogger<FileParserService>>();
+
+        private Mock<IConfiguration> MockConfig = new Mock<IConfiguration>();
 
         private AppDbContext _dbContext {get; set;}
 
@@ -30,7 +33,8 @@ namespace hySite.Tests
                 MockFileProvider.Object,
                 _dbContext,
                 MockBlogRepository.Object,
-                MockLogger.Object
+                MockLogger.Object,
+                MockConfig.Object
             );
         }
 

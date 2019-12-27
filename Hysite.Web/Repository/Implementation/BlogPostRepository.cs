@@ -41,6 +41,12 @@ namespace hySite
 
         }
 
+        //@todo: convert all methods here to expression methods in separate commit
+        public IEnumerable<BlogPost> RetrieveAll() =>
+             _dbContext
+             .BlogPosts
+             .OrderByDescending(p => p.Created);
+
         public int PostsCount()
         {
             return _dbContext.BlogPosts.Count();

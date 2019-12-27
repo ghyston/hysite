@@ -9,6 +9,7 @@ namespace hySite
         void Add(IEnumerable<BlogPost> posts);
         BlogPost FindPostByFileName(string fileName);
         IEnumerable<BlogPost> FindPostsByPage(int pageNumber, int postPerPage);
+        IEnumerable<BlogPost> RetrieveAll();
         int PostsCount();
         void Remove(BlogPost post);
         void RemoveAll();

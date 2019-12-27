@@ -13,12 +13,14 @@ namespace hySite
     {
         private readonly IGitRepository _gitRepository;
         private readonly IFileParserService _fileParserService;
+        private readonly IRssFeedService _rssFeedService;
         private readonly IConfiguration _configuration;
 
-        public GitController(IGitRepository gitRepository, IFileParserService fileParserService, IConfiguration configuration)
+        public GitController(IGitRepository gitRepository, IFileParserService fileParserService, IRssFeedService rssFeedService, IConfiguration configuration)
         {
             _gitRepository = gitRepository;
             _fileParserService = fileParserService;
+            _rssFeedService = rssFeedService;
             _configuration = configuration;
         }
 
@@ -34,6 +36,7 @@ namespace hySite
                 {
                     _gitRepository.Pull();
                     _fileParserService.ParseExistingFiles();
+                    _rssFeedService.CreateRssFeed();
                     return Ok();
                 }
             }

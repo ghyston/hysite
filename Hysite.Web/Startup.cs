@@ -48,7 +48,7 @@ namespace hySite
             services.AddScoped<IViewStatisticRepository, ViewStatisticRepository>(); //Scoped has lifetime per request
             services.AddTransient<IGitRepository, GitRepository>();
             services.AddTransient<IFileParserService, FileParserService>(); //Transient created each time
-            services.AddTransient<IRssFeedService, RssFeedService>();
+            services.AddSingleton<IRssFeedService, RssFeedService>();
             services.AddSingleton<IFileWatcherSingleton, FileWatcherService>();
             
             services.AddTransient<IHandler<OnNewFileRequest, OnNewFileResponse>, OnNewFileHandler>();

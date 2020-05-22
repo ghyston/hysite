@@ -7,14 +7,14 @@
     @Html.Partial("BlogEntry", item)
 }
 
-@if(@Model.PrevPage != null)
-{
-    <a class="navigation" style="float: left" href="/@Model.PrevPage">Previous</a>
-}
-
 @if(@Model.NextPage != null)
 {
-    <a class="navigation" style="float: right" href="/@Model.NextPage">Next</a>
+    <a class="navigation" style="float: left" href="/@Model.NextPage">&#8592; Next</a>
+}
+
+@if(@Model.PrevPage != null)
+{
+    <a class="navigation" style="float: right" href="/@Model.PrevPage">Previous &#8594;</a>
 }
 
 <div class="copyright">&copy; Copyright @DateTime.Now.Year</div>

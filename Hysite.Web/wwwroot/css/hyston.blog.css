@@ -34,6 +34,7 @@ body {
 
   .copyright {
     color: grey;
+    text-align: center;
   }
 
   pre {    
@@ -42,4 +43,14 @@ body {
 
   p {
     text-indent: 20px;
+  }
+
+  .blogTitleItem:hover {
+    text-decoration: underline !important;
+    color: whitesmoke !important;
+  }
+
+  .navigation:hover {
+    color: rgb(13, 151, 151) !important; 
+    text-decoration:underline !important;
   }

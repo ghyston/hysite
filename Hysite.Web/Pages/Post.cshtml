@@ -6,10 +6,10 @@
 
 @if(!string.IsNullOrEmpty(@Model.NextPostFileName) )
 {
-    <a style="float: right" class="navigation" href="@Html.Raw(@Model.NextPostFileName)">Next entry</a>
+    <a style="float: right" class="navigation" href="@Html.Raw(@Model.NextPostFileName)">Next entry &#8594;</a>
 }
 
 @if(!string.IsNullOrEmpty(@Model.PrevPostFileName) )
 {
-    <a style="float: left" class="navigation" href="@Html.Raw(@Model.PrevPostFileName)">Prev entry</a>
+    <a style="float: left" class="navigation" href="@Html.Raw(@Model.PrevPostFileName)">&#8592; Prev entry</a>
 }

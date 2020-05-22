@@ -46,9 +46,9 @@ namespace hySite
                 return RedirectToPage("/LostAndNotFound");
             }
 
-            this.PageNum = pageNumber;            
-            this.PrevPage = pageNumber == 0 ? (int?)null : (pageNumber - 1);            
-            this.NextPage = pageNumber >= pagesCount ? (int?)null : (pageNumber + 1);
+            this.PageNum = pageNumber;
+            this.PrevPage = pageNumber >= pagesCount ? (int?)null : (pageNumber + 1);
+            this.NextPage = pageNumber == 0 ? (int?)null : (pageNumber - 1);
             this.Posts = _blogPostRepository.FindPostsByPage(this.PageNum, POSTS_PER_PAGE).ToList();
 
             var handler = _serviceProvider.GetService<IncrementViewsHandler>();

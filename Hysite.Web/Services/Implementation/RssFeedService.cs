@@ -20,7 +20,7 @@ namespace hySite
         public void CreateRssFeed()
         {
             SyndicationFeed feed = new SyndicationFeed("Hyston blog", "Mumblings about programblings", new Uri("http://hyston.blog/rss"), "hyston.blog", DateTime.Now);
-            SyndicationPerson sp = new SyndicationPerson("ghyston@gmail.com", "Ilja Stepanow", "hyston.blog");
+            SyndicationPerson sp = new SyndicationPerson("ghyston@gmail.com (Ilja Stepanow)", "Ilja Stepanow", "http://hyston.blog");
             feed.Authors.Add(sp);
 
             var allPosts = blogPostRepository.RetrieveAll();

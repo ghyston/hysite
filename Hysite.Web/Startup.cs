@@ -49,12 +49,6 @@ namespace hySite
             services.AddTransient<IGitRepository, GitRepository>();
             services.AddTransient<IFileParserService, FileParserService>(); //Transient created each time
             services.AddSingleton<IRssFeedService, RssFeedService>();
-            services.AddSingleton<IFileWatcherSingleton, FileWatcherService>();
-            
-            services.AddTransient<IHandler<OnNewFileRequest, OnNewFileResponse>, OnNewFileHandler>();
-            services.AddTransient<IHandler<OnFileChangedRequest, OnFileChangedResponse>, OnFileChangedHandler>();
-            services.AddTransient<IHandler<OnFileRenamedRequest, OnFileRenamedResponse>, OnFileRenamedHandler>();
-            services.AddTransient<IHandler<OnFileDeletedRequest, OnFileDeletedResponse>, OnFileDeletedHandler>();
             services.AddTransient<IHandler<IncrementViewsHandlerRequest, IncrementViewsHandlerResponse>, IncrementViewsHandlerHandler>();
 
             return services.BuildServiceProvider();
@@ -127,13 +121,7 @@ namespace hySite
             });
 
             var fileParser = serviceProvider.GetService<IFileParserService>();
-            fileParser.ParseExistingFiles();        
-
-            if (environment.IsDevelopment())
-            {
-                var fileWatcher = serviceProvider.GetService<IFileWatcherSingleton>();
-                fileWatcher.StartWatch();
-            }
+            fileParser.ParseExistingFiles();
         }
     }
 }

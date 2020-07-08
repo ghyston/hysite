@@ -32,7 +32,6 @@ msbuild.wrn
 .vs/
 
 #hysite scripts
-Dockerfile
 build.sh
 publish.sh
 run.sh

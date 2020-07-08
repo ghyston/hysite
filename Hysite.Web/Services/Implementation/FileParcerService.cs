@@ -7,6 +7,7 @@ using Microsoft.Extensions.FileProviders;
 using Markdig;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Configuration;
+using Markdig.SyntaxHighlighting;
 
 namespace hySite
 {
@@ -126,6 +127,7 @@ namespace hySite
 
             var pipeline = new MarkdownPipelineBuilder()
                 .UseAdvancedExtensions()
+                .UseSyntaxHighlighting()
                 .UseFootnotes()
                 .Build();
 

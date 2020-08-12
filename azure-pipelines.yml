@@ -20,13 +20,21 @@ stages:
       vmImage: 'ubuntu-latest'
     steps:
     - task: Docker@2
-      displayName: Build and publish an image
+      displayName: Docker build
       inputs:
         containerRegistry: 'hysite'
         repository: 'hysite'
-        command: 'buildAndPush'
+        command: build
         Dockerfile: 'Dockerfile'
-        arguments: version='$(Build.BuildNumber)'
+        arguments: '--build-arg version=$(Build.BuildNumber)'
+        tags: $(tag)
+    - task: Docker@2
+      displayName: Docker push
+      inputs:
+        containerRegistry: 'hysite'
+        repository: 'hysite'
+        command: push
+        tags: $(tag)
     - task: AzureCLI@2
       displayName: Update azure container
       inputs:

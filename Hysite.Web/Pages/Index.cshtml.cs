@@ -56,7 +56,7 @@ namespace hySite
                 (handler as IncrementViewsHandler)?
                 .Handle(new IncrementViewsHandlerRequest());
 
-            this.Version = Environment.GetEnvironmentVariable("HYSITE_VERSION") ?? "version not found";
+            this.Version = Environment.GetEnvironmentVariable("HYSITE_VERSION") ?? "unknown";
 
             return Page();
         }

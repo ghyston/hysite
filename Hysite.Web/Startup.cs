@@ -71,8 +71,8 @@ namespace hySite
             loggerFactory.AddFile(logsPath + "/hysite-{Date}.log");
 
             var logger = loggerFactory.CreateLogger("startup");
-            var version = Environment.GetEnvironmentVariable("HYSITE_VERSION") ?? "environment version not found";
-            logger.LogInformation($"Version: {version}");
+            var version = Environment.GetEnvironmentVariable("HYSITE_VERSION") ?? "unknown";
+            logger.LogWarning($"Version: {version}");
 
             if (environment.IsDevelopment())
             {

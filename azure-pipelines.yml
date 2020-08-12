@@ -26,6 +26,7 @@ stages:
         repository: 'hysite'
         command: 'buildAndPush'
         Dockerfile: 'Dockerfile'
+        arguments: version='$(Build.BuildNumber)'
     - task: AzureCLI@2
       displayName: Update azure container
       inputs:

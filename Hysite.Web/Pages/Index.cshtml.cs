@@ -19,6 +19,7 @@ namespace hySite
         public int PageNum {get; set; }
         public int? NextPage { get; set; }
         public int? PrevPage { get; set; } //@todo: make it string? to hide "/0" at first page
+        public string Version { get; set;}
         
         private static int POSTS_PER_PAGE = 5;
 
@@ -54,6 +55,8 @@ namespace hySite
             var handler = _serviceProvider.GetService<IncrementViewsHandler>();
                 (handler as IncrementViewsHandler)?
                 .Handle(new IncrementViewsHandlerRequest());
+
+            this.Version = Environment.GetEnvironmentVariable("HYSITE_VERSION") ?? "version not found";
 
             return Page();
         }

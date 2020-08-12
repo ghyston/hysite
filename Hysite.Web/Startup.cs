@@ -14,6 +14,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
 using Serilog.Extensions.Logging.File;
 using Markdig;
+using System.Collections;
 
 namespace hySite
 {
@@ -68,6 +69,10 @@ namespace hySite
                 Directory.CreateDirectory(logsPath);
 
             loggerFactory.AddFile(logsPath + "/hysite-{Date}.log");
+
+            var logger = loggerFactory.CreateLogger("startup");
+            var version = Environment.GetEnvironmentVariable("HYSITE_VERSION") ?? "environment version not found";
+            logger.LogInformation($"Version: {version}");
 
             if (environment.IsDevelopment())
             {

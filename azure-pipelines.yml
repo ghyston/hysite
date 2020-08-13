@@ -38,7 +38,7 @@ stages:
     - task: AzureCLI@2
       displayName: Update azure container
       inputs:
-        azureSubscription: 'Pay-As-You-Go (224c46dd-3b37-46d4-b24e-f0d59970e96d)'
+        azureSubscription: 'Pay-As-You-Go ($(azureSubscription))'
         scriptType: 'bash'
         scriptLocation: 'inlineScript'
         inlineScript: 'az container create --resource-group hysite-rg --name hysitecontainer --image hysite.azurecr.io/hysite:$(Build.BuildNumber) --ports 80 --dns-name-label hysite --location eastus --registry-username hysite --registry-password $(registry-password)'

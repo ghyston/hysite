@@ -24,15 +24,22 @@ namespace hySite
             WebHost.CreateDefaultBuilder(args)
                 .ConfigureAppConfiguration((ctx, builder) => {
 
-                    //this code was taken from https://www.youtube.com/watch?v=k2VYcYS3EIA&t=846s
-                    var keyVaultEndpoint = GetKeyVaultEndpoint();
-                    if( string.IsNullOrWhiteSpace(keyVaultEndpoint))
-                        return;
+                    try
+                    {
+                        //this code was taken from https://www.youtube.com/watch?v=k2VYcYS3EIA&t=846s
+                        var keyVaultEndpoint = GetKeyVaultEndpoint();
+                        if( string.IsNullOrWhiteSpace(keyVaultEndpoint))
+                            return;
 
-                    var azureServiceTokenProvider = new AzureServiceTokenProvider();
-                    var authCallback = new KeyVaultClient.AuthenticationCallback(azureServiceTokenProvider.KeyVaultTokenCallback);
-                    var keyVaultClient = new KeyVaultClient(authCallback);
-                    builder.AddAzureKeyVault(keyVaultEndpoint, keyVaultClient, new DefaultKeyVaultSecretManager());
+                        var azureServiceTokenProvider = new AzureServiceTokenProvider();
+                        var authCallback = new KeyVaultClient.AuthenticationCallback(azureServiceTokenProvider.KeyVaultTokenCallback);
+                        var keyVaultClient = new KeyVaultClient(authCallback);
+                        builder.AddAzureKeyVault(keyVaultEndpoint, keyVaultClient, new DefaultKeyVaultSecretManager());
+                    }
+                    catch(Exception) 
+                    {
+
+                    }
                 })
                 .UseStartup<Startup>()
                 .Build();

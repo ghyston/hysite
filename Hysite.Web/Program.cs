@@ -22,7 +22,7 @@ namespace hySite
 
         public static IWebHost BuildWebHost(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
-                .ConfigureAppConfiguration((ctx, builder) => {
+                /*.ConfigureAppConfiguration((ctx, builder) => {
 
                     try
                     {
@@ -40,7 +40,7 @@ namespace hySite
                     {
 
                     }
-                })
+                })*/
                 .UseStartup<Startup>()
                 .Build();
 

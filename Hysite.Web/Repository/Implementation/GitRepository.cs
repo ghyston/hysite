@@ -54,8 +54,8 @@ public class GitRepository : IGitRepository
         {
             GitUrl = _configuration["PostsGitUrl"],
             LocalPath = _configuration["PostsLocalPath"],
-            GitUser = _configuration["github-user"],
-            GitPass = _configuration["github-pass"]
+            GitUser = _configuration["github:user"],
+            GitPass = _configuration["github:pass"]
         };
     }
 
@@ -115,7 +115,7 @@ public class GitRepository : IGitRepository
     // mostly copied from https://www.jerriepelser.com/blog/create-github-webhook-aspnetcore-aws-lambda/
     public bool IsSecretValid(string signatureWithPrefix, string payload)
     {
-        var token = _configuration["github-hookSecret"];
+        var token = _configuration["github:hookSecret"];
 
         if (string.IsNullOrWhiteSpace(payload))
         {

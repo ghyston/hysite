@@ -1,0 +1,35 @@
+name: Pushed to docker
+
+on:
+  push:
+    branches: master
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+      
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 3.1.201
+      
+    - name: Publish
+      working-directory: Hysite.Web
+      run: dotnet publish -c Release -r linux-x64 -o out
+        
+    - name: Copy Dockerfile into build output
+      run: cp build/Dockerfile out/
+          
+    - name: Builder Dockerimage and publish to Registry
+      # Let's call this Publish-... when it actually builds and publishes... 
+      uses: elgohr/Publish-Docker-Github-Action@master
+      with:
+        name: hyston/hysite
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+        tags: "${{ github.sha }}"
+        workdir: out/

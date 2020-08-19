@@ -22,7 +22,7 @@ jobs:
       run: dotnet publish -c Release -r linux-x64 -o out
         
     - name: Copy Dockerfile into build output
-      run: cp build/Dockerfile out/
+      run: cp Dockerfile out/
           
     - name: Builder Dockerimage and publish to Registry
       # Let's call this Publish-... when it actually builds and publishes... 

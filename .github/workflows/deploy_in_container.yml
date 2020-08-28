@@ -44,20 +44,20 @@ jobs:
       with:
       app-settings-json: |
         [
-            {
-                "name": "DOCKER_REGISTRY_SERVER_PASSWORD",
-                "value": "${{ secrets.AZURE_CR_PASSWORD }}",
-                "slotSetting": false
-            },
-            {
-                "name": "DOCKER_REGISTRY_SERVER_URL",
-                "value": "https://hysitecr.azurecr.io",
-                "slotSetting": false
-            },
-            {
-                "name": "DOCKER_REGISTRY_SERVER_USERNAME",
-                "value": "${{ secrets.AZURE_CR_LOGIN  }}",
-                "slotSetting": false
-            }
+          {
+            "name": "DOCKER_REGISTRY_SERVER_PASSWORD",
+            "value": "${{ secrets.AZURE_CR_PASSWORD }}",
+            "slotSetting": false
+          },
+          {
+            "name": "DOCKER_REGISTRY_SERVER_URL",
+            "value": "https://hysitecr.azurecr.io",
+            "slotSetting": false
+          },
+          {
+            "name": "DOCKER_REGISTRY_SERVER_USERNAME",
+            "value": "${{ secrets.AZURE_CR_LOGIN  }}",
+            "slotSetting": false
+          }
         ]
 

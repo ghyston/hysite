@@ -1,8 +1,8 @@
-name: Build & deploy as container
+name: Build & deploy
 
 on:
   push:
-    branches: [ deployment_adventures ]
+    branches: [ master ]
 
 jobs:
 

@@ -11,10 +11,19 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - uses: azure/docker-login@v1
+    - name: Login to Azure CR
+      with:
+        login-server: hysitecr.azurecr.io
+        username: ${{ secrets.AZURE_CR_LOGIN }} 
+        password: ${{ secrets.AZURE_CR_PASSWORD }} 
+    
     - uses: actions/checkout@v2
-    - name: Build the Docker image
-      run: docker build 
+    - name: Build & push the Docker image
+      run: |
+        docker build 
         --build-arg AZURE_CLIENT_ID=${{ secrets.AZURE_CLIENT_ID }} 
         --build-arg AZURE_CLIENT_SECRET=${{ secrets.AZURE_CLIENT_SECRET }} 
         --build-arg AZURE_TENANT_ID=${{ secrets.AZURE_TENANT_ID }} 
-        --tag hysite:$(date +%s) .
+        --tag hysite:${{ github.sha }} .
+        docker push hysitecr.azurecr.io/hysite:${{ github.sha }}

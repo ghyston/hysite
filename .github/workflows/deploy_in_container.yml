@@ -12,13 +12,12 @@ jobs:
 
     steps:
     - uses: azure/docker-login@v1
-    - name: Login to Azure CR
+      name: Login to Azure CR
       with:
         login-server: hysitecr.azurecr.io
         username: ${{ secrets.AZURE_CR_LOGIN }} 
         password: ${{ secrets.AZURE_CR_PASSWORD }} 
     
-    - uses: actions/checkout@v2
     - name: Build & push the Docker image
       run: |
         docker build \

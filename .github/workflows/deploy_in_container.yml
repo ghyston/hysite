@@ -11,10 +11,31 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - uses: azure/docker-login@v1
+      name: Login to Azure CR
+      with:
+        login-server: hysitecr.azurecr.io
+        username: ${{ secrets.AZURE_CR_LOGIN }} 
+        password: ${{ secrets.AZURE_CR_PASSWORD }} 
+    
     - uses: actions/checkout@v2
-    - name: Build the Docker image
-      run: docker build \
-        --build-arg AZURE_CLIENT_ID=${{ secrets.AZURE_CLIENT_ID }} \
-        --build-arg AZURE_CLIENT_SECRET=${{ secrets.AZURE_CLIENT_SECRET }} \
-        --build-arg AZURE_TENANT_ID=${{ secrets.AZURE_TENANT_ID }} \
-        --tag hysite:$(date +%s) .
+      name: Checkout
+
+    - name: Build Docker image
+      run: docker build 
+        --build-arg AZURE_CLIENT_ID=${{ secrets.AZURE_CLIENT_ID }} 
+        --build-arg AZURE_CLIENT_SECRET=${{ secrets.AZURE_CLIENT_SECRET }} 
+        --build-arg AZURE_TENANT_ID=${{ secrets.AZURE_TENANT_ID }} 
+        --build-arg HYSITE_VERSION=${{ github.sha }} 
+        --tag hysitecr.azurecr.io/hysite:${{ github.sha }} .
+
+    - name: Push Docker image
+      run: docker push hysitecr.azurecr.io/hysite:${{ github.sha }}
+
+    - name: Deploy web app
+      uses: azure/webapps-deploy@v2
+      with:
+        app-name: 'hysite'
+        publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE }}
+        images: 'hysitecr.azurecr.io/nodejssampleapp:${{ github.sha }}'
+

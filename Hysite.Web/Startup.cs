@@ -50,6 +50,7 @@ namespace hySite
             services.AddTransient<IGitRepository, GitRepository>();
             services.AddTransient<IFileParserService, FileParserService>(); //Transient created each time
             services.AddSingleton<IRssFeedService, RssFeedService>();
+            services.AddSingleton<ISecretsProvider, AzureKeyVaultSecretsProvider>();
             services.AddTransient<IHandler<IncrementViewsHandlerRequest, IncrementViewsHandlerResponse>, IncrementViewsHandlerHandler>();
 
             return services.BuildServiceProvider();

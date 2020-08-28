@@ -4,6 +4,8 @@
     <UserSecretsId>b37934c8-0b49-4967-9fab-f4cf99386419</UserSecretsId>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="Azure.Identity" Version="1.2.1" />
+    <PackageReference Include="Azure.Security.KeyVault.Secrets" Version="4.1.0" />
     <PackageReference Include="LibGit2Sharp" Version="0.26.2" />
     <PackageReference Include="Markdig" Version="0.17.1" />
     <PackageReference Include="Markdig.SyntaxHighlighting" Version="1.1.7" />

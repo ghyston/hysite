@@ -26,8 +26,8 @@ jobs:
         --build-arg AZURE_CLIENT_ID=${{ secrets.AZURE_CLIENT_ID }} 
         --build-arg AZURE_CLIENT_SECRET=${{ secrets.AZURE_CLIENT_SECRET }} 
         --build-arg AZURE_TENANT_ID=${{ secrets.AZURE_TENANT_ID }} 
-        --tag hysite:${{ github.sha }} .
+        --tag hysitecr.azurecr.io/hysite:${{ github.sha }} .
 
     - name: Push Docker image
-      run: docker push hysite:${{ github.sha }}
+      run: docker push hysitecr.azurecr.io/hysite:${{ github.sha }}
 

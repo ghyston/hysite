@@ -26,6 +26,7 @@ jobs:
         --build-arg AZURE_CLIENT_ID=${{ secrets.AZURE_CLIENT_ID }} 
         --build-arg AZURE_CLIENT_SECRET=${{ secrets.AZURE_CLIENT_SECRET }} 
         --build-arg AZURE_TENANT_ID=${{ secrets.AZURE_TENANT_ID }} 
+        --build-arg HYSITE_VERSION=${{ github.sha }} 
         --tag hysitecr.azurecr.io/hysite:${{ github.sha }} .
 
     - name: Push Docker image

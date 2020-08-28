@@ -35,6 +35,7 @@ msbuild.wrn
 build.sh
 publish.sh
 run.sh
+run_docker_localy.sh
 
 #temp posts
 **/posts/

@@ -39,26 +39,26 @@ jobs:
         publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE }}
         images: 'hysitecr.azurecr.io/nodejssampleapp:${{ github.sha }}'
 
-      - name: Some bullshit about Set Web App ACR authentication
-        uses: Azure/appservice-settings@v1
-        with:
-          app-name: 'hysite'
-          app-settings-json: |
-            [
-              {
-                "name": "DOCKER_REGISTRY_SERVER_PASSWORD",
-                "value": "${{ secrets.AZURE_CR_PASSWORD }}",
-                "slotSetting": false
-              },
-              {
-                "name": "DOCKER_REGISTRY_SERVER_URL",
-                "value": "https://hysitecr.azurecr.io",
-                "slotSetting": false
-              },
-              {
-                "name": "DOCKER_REGISTRY_SERVER_USERNAME",
-                "value": "${{ secrets.AZURE_CR_LOGIN  }}",
-                "slotSetting": false
-              }
-            ]
+    - name: Some bullshit about Set Web App ACR authentication
+      uses: Azure/appservice-settings@v1
+      with:
+        app-name: 'hysite'
+        app-settings-json: |
+          [
+            {
+              "name": "DOCKER_REGISTRY_SERVER_PASSWORD",
+              "value": "${{ secrets.AZURE_CR_PASSWORD }}",
+              "slotSetting": false
+            },
+            {
+              "name": "DOCKER_REGISTRY_SERVER_URL",
+              "value": "https://hysitecr.azurecr.io",
+              "slotSetting": false
+            },
+            {
+              "name": "DOCKER_REGISTRY_SERVER_USERNAME",
+              "value": "${{ secrets.AZURE_CR_LOGIN  }}",
+              "slotSetting": false
+            }
+          ]
 

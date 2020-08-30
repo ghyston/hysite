@@ -51,6 +51,7 @@ namespace hySite
             services.AddTransient<IFileParserService, FileParserService>(); //Transient created each time
             services.AddSingleton<IRssFeedService, RssFeedService>();
             services.AddSingleton<ISecretsProvider, AzureKeyVaultSecretsProvider>();
+            services.AddSingleton<IVersionService, VersionService>();
             services.AddTransient<IHandler<IncrementViewsHandlerRequest, IncrementViewsHandlerResponse>, IncrementViewsHandlerHandler>();
 
             return services.BuildServiceProvider();
@@ -63,6 +64,7 @@ namespace hySite
             IServiceProvider serviceProvider,
             ILoggerFactory loggerFactory,
             IGitRepository gitRepository,
+            IVersionService versionService,
             IConfiguration configuration)
         {
             var logsPath = configuration["LogsLocalPath"];
@@ -72,8 +74,8 @@ namespace hySite
             loggerFactory.AddFile(logsPath + "/hysite-{Date}.log");
 
             var logger = loggerFactory.CreateLogger("startup");
-            var version = Environment.GetEnvironmentVariable("HYSITE_VERSION") ?? "unknown";
-            logger.LogWarning($"Version: {version}");
+            var version = versionService.GetCurrentGitSHA();
+            logger.LogWarning($"git commit: {version}");
 
             if (environment.IsDevelopment())
             {

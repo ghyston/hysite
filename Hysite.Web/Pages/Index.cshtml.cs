@@ -12,7 +12,6 @@ namespace hySite
     //@todo: update handler register system!
     using IncrementViewsHandler = IHandler<IncrementViewsHandlerRequest, IncrementViewsHandlerResponse>;
 
-
     public class IndexModel : PageModel
     {
         public List<BlogPost> Posts {get; private set; } = new List<BlogPost>();
@@ -25,14 +24,19 @@ namespace hySite
 
         private readonly IBlogPostRepository _blogPostRepository;
         private readonly IServiceProvider _serviceProvider;
+        private readonly IVersionService _versionService;
         private readonly IConfiguration _configuration;
 
-        public IndexModel(IBlogPostRepository blogPostRepository, IConfiguration configuration, IServiceProvider serviceProvider)
+        public IndexModel(
+            IBlogPostRepository blogPostRepository, 
+            IConfiguration configuration, 
+            IServiceProvider serviceProvider,
+            IVersionService versionService)
         {
             _blogPostRepository = blogPostRepository;
             _configuration = configuration;
             _serviceProvider = serviceProvider;
-
+            _versionService = versionService;
             POSTS_PER_PAGE = Int32.Parse(_configuration["PostsPerPage"]);
         }
 
@@ -55,8 +59,8 @@ namespace hySite
             var handler = _serviceProvider.GetService<IncrementViewsHandler>();
                 (handler as IncrementViewsHandler)?
                 .Handle(new IncrementViewsHandlerRequest());
-
-            this.Version = Environment.GetEnvironmentVariable("HYSITE_VERSION") ?? "unknown";
+                
+            this.Version = _versionService.GetCurrentGitSHA();
 
             return Page();
         }

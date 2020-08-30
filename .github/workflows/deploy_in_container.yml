@@ -37,4 +37,4 @@ jobs:
       with:
         app-name: 'hysite'
         publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE }}
-        images: 'hysitecr.azurecr.io/nodejssampleapp:${{ github.sha }}'
+        images: 'hysitecr.azurecr.io/hysite:${{ github.sha }}'

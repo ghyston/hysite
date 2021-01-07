@@ -21,7 +21,17 @@ jobs:
 
     - run: dotnet publish -r linux-x64 -c Release -o out -p:PublishSingleFile=true -p:PublishTrimmed=true -p:PublishReadyToRun=true --self-contained false Hysite.Web
 
-    -run: ls out
+    - run: ls out
+
+    - name: Deploy to linode with scp 
+      uses: appleboy/scp-action@master
+      with:
+        host: ${{ secrets.LINODE_HOST }}
+        username: ${{ secrets.LINODE_USERNAME }}
+        password: ${{ secrets.LINODE_PASSWORD }}
+        source: "out/*"
+        target: ""
+
 
     
 

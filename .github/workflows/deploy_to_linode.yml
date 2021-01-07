@@ -24,7 +24,7 @@ jobs:
     - name: tar hysite
       run: |
         tar czf hysite.tar.gz out/
-        
+
     - run: ls out
 
     - name: Transfer to linode with scp 
@@ -34,4 +34,4 @@ jobs:
         username: ${{ secrets.LINODE_USERNAME }}
         password: ${{ secrets.LINODE_PASSWORD }}
         source: "hysite.tar.gz"
-         target: ""
+        target: ""

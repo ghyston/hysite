@@ -1,4 +1,4 @@
-name: Build and push to linode
+name: Build docker image and push dockerhub
 
 on:
   push:

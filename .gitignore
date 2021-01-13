@@ -42,3 +42,4 @@ run_docker_localy.sh
 **/log/
 **/*.md
 *.log
+out/

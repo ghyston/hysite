@@ -10,7 +10,6 @@ namespace hySite
     public class GitRepository : IGitRepository
     {
         private readonly IConfiguration _configuration;
-        private readonly ISecretsProvider _secretsProvider;
         private readonly ILogger<IGitRepository> _logger;
 
         private const string Sha1Prefix = "sha1=";
@@ -40,10 +39,9 @@ namespace hySite
             }
         }
 
-        public GitRepository(IConfiguration configuration, ISecretsProvider secretsProvider, ILogger<IGitRepository> logger)
+        public GitRepository(IConfiguration configuration, ILogger<IGitRepository> logger)
         {
             _configuration = configuration;
-            _secretsProvider = secretsProvider;
             _logger = logger;
         }
 
@@ -51,8 +49,8 @@ namespace hySite
         {
             GitUrl = _configuration["PostsGitUrl"],
             LocalPath = _configuration["PostsLocalPath"],
-            GitUser = _secretsProvider.GetSecret("github-user"),
-            GitPass = _secretsProvider.GetSecret("github-pass")
+            GitUser = _configuration["GithubUser"],
+            GitPass = _configuration["GithubPass"] 
         };
 
         public IResult Clone()
@@ -111,7 +109,7 @@ namespace hySite
         // mostly copied from https://www.jerriepelser.com/blog/create-github-webhook-aspnetcore-aws-lambda/
         public bool IsSecretValid(string signatureWithPrefix, string payload)
         {
-            var token = _secretsProvider.GetSecret("github-hookSecret");
+            var token = _configuration["GithubHookSecret"];
 
             if (string.IsNullOrWhiteSpace(payload))
             {

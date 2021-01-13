@@ -1,8 +1,8 @@
-name: Build & deploy to linode
+name: Build docker image, push to dockerhub, deploy on linode
 
 on:
   push:
-    branches: [ master ]
+    branches: [ backToLinode, master ]
 
 jobs:
 
@@ -11,27 +11,32 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
-      name: Checkout
+      - name: Check out the repo
+        uses: actions/checkout@v2
 
-    - uses: actions/setup-dotnet@v1
-      name: Setup dotnet
-      with:
-        dotnet-version: '5.0'
+      - name: Login to DockerHub
+        uses: docker/login-action@v1 
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_TOKEN }}
 
-    - run: dotnet publish -r linux-x64 -c Release -o out -p:PublishSingleFile=true -p:PublishReadyToRun=true --self-contained false Hysite.Web
+      - name: Build Docker image
+        uses: docker/build-push-action@v2
+        with:
+          load: true
+          tags: hyston/hysite:latest
+          build-args: |
+            HYSITE_VERSION=${{ github.sha }}
 
-    - name: tar hysite
-      run: |
-        tar czf hysite.tar.gz out/
+      - run: docker push hyston/hysite:latest
 
-    - run: ls out
-
-    - name: Transfer to linode with scp 
-      uses: appleboy/scp-action@master
-      with:
-        host: ${{ secrets.LINODE_HOST }}
-        username: ${{ secrets.LINODE_USERNAME }}
-        password: ${{ secrets.LINODE_PASSWORD }}
-        source: "hysite.tar.gz"
-        target: ""
+      - name: Restart hysite 
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.LINODE_HOST }}
+          username: ${{ secrets.LINODE_USERNAME }}
+          password: ${{ secrets.LINODE_PASSWORD }}
+          script: |
+            docker stop $(docker ps -aq)
+            docker pull hyston/hysite:latest
+            docker run --rm -d -p 80:80 -v /root/logs:/app/logs hyston/hysite:latest

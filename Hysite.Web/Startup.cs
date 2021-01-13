@@ -40,6 +40,11 @@ namespace hySite
                 options.Conventions.AddPageRoute("/Post", "{postname}");
             });
 
+            services.AddHttpsRedirection(options =>
+            {
+                options.RedirectStatusCode = StatusCodes.Status307TemporaryRedirect;
+            });
+
             //@todo: use one postsFileProvider
             var physicalProvider = _webHostingEnviroment.ContentRootFileProvider;
 
@@ -118,6 +123,7 @@ namespace hySite
             });
 
             app.UseRouting();
+            app.UseHttpsRedirection();
             app.UseEndpoints(endpoints => 
             {
                 endpoints.MapRazorPages();

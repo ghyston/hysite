@@ -1,4 +1,6 @@
 using System;
+using System.Reflection;
+using System.Runtime.Versioning;
 
 namespace hySite
 {
@@ -11,5 +13,11 @@ namespace hySite
                 ? "unknown"
                 : env.Substring(0, 7);
         }
+
+        public string GetFrameworkVersion() => 
+            Assembly
+            .GetEntryAssembly()?
+            .GetCustomAttribute<TargetFrameworkAttribute>()?
+            .FrameworkName;
     }
 }

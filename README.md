@@ -1,13 +1,14 @@
 # hysite
-Blog engine on .net core
+Blog engine on .net
 
-![Build & deploy](https://github.com/ghyston/hysite/workflows/Build%20&%20deploy/badge.svg?branch=master)
+
+![Built & deployed](https://github.com/ghyston/hysite/workflows/Build%20docker%20image,%20push%20to%20dockerhub,%20deploy%20on%20linode/badge.svg)
 -----
-## main features:
-* using filesystem to load posts
-* render markdown to html
-* ???
 
-## goal
-* load .net core by doing
-* make simple app to process bunch of .md files
+This is a small hobby project for learning .net development and deployment. Actual blog contains some posts, but they are not so interesting, as git log for this repository.
+
+## main features:
+* using git repository as host for blog posts
+* posts are markdown files with custom header
+* hosted on [linode](http://linode.com/) linux vm, running in docker
+* actual site is here: [Hyston Blog](https://hyston.blog/)

@@ -27,6 +27,7 @@ jobs:
           tags: hyston/hysite:latest
           build-args: |
             HYSITE_VERSION=${{ github.sha }}
+            PFX_PASSWORD=${{ secrets.PFX_PASSWORD }}
 
       - run: docker push hyston/hysite:latest
 
@@ -39,4 +40,4 @@ jobs:
           script: |
             docker stop $(docker ps -aq)
             docker pull hyston/hysite:latest
-            docker run --rm -d -p 80:80 -v /root/logs:/app/logs hyston/hysite:latest
+            docker run --rm -d -p 80:80 -v /root/logs:/app/logs -v /root/cert:/app/cert hyston/hysite:latest

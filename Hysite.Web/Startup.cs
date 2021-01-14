@@ -40,10 +40,10 @@ namespace hySite
                 options.Conventions.AddPageRoute("/Post", "{postname}");
             });
 
-            /*services.AddHttpsRedirection(options =>
+            services.AddHttpsRedirection(options =>
             {
                 options.RedirectStatusCode = StatusCodes.Status307TemporaryRedirect;
-            });*/
+            });
 
             //@todo: use one postsFileProvider
             var physicalProvider = _webHostingEnviroment.ContentRootFileProvider;
@@ -121,14 +121,14 @@ namespace hySite
                 FileProvider = new PhysicalFileProvider(imagesFullPth),
                 RequestPath = new PathString("")
             });
-            app.UseStaticFiles(new StaticFileOptions()
+            /*app.UseStaticFiles(new StaticFileOptions()
             {
                 FileProvider = new PhysicalFileProvider(postsFullPath),
                 RequestPath = new PathString("/.well-known/pki-validation") //@todo: this is for https cert validation, probably can be removed später?
-            });
+            });*/
 
             app.UseRouting();
-            //app.UseHttpsRedirection();
+            app.UseHttpsRedirection();
             app.UseEndpoints(endpoints => 
             {
                 endpoints.MapRazorPages();

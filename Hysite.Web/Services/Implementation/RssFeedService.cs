@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ServiceModel.Syndication;
 using System.Xml;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 
 namespace hySite
 {
@@ -10,17 +11,19 @@ namespace hySite
     {
         private readonly IBlogPostRepository blogPostRepository;
         private readonly IConfiguration configuration;
+        private readonly ILogger<RssFeedService> logger;
 
-        public RssFeedService(IBlogPostRepository blogPostRepository, IConfiguration configuration)
+        public RssFeedService(IBlogPostRepository blogPostRepository, IConfiguration configuration, ILogger<RssFeedService> logger)
         {
             this.blogPostRepository = blogPostRepository;
             this.configuration = configuration;
+            this.logger = logger;
         }
 
         public void CreateRssFeed()
         {
-            SyndicationFeed feed = new SyndicationFeed("Hyston blog", "Mumblings about programblings", new Uri("http://hyston.blog/rss"), "hyston.blog", DateTime.Now);
-            SyndicationPerson sp = new SyndicationPerson("ghyston@gmail.com (Ilja Stepanow)", "Ilja Stepanow", "http://hyston.blog");
+            SyndicationFeed feed = new SyndicationFeed("Hyston blog", "Mumblings about programblings", new Uri("https://hyston.blog/rss"), "hyston.blog", DateTime.Now);
+            SyndicationPerson sp = new SyndicationPerson("ghyston@gmail.com (Ilja Stepanow)", "Ilja Stepanow", "https://hyston.blog");
             feed.Authors.Add(sp);
 
             var allPosts = blogPostRepository.RetrieveAll();
@@ -28,9 +31,16 @@ namespace hySite
             
             foreach(var post in allPosts)
             {
-                TextSyndicationContent textContent = new TextSyndicationContent(post.HtmlContent);
-                SyndicationItem item = new SyndicationItem(post.Title, textContent, new Uri($"http://hyston.blog/{post.FileName}"), post.FileName, post.Created);
-                items.Add(item);
+                try
+                {
+                    TextSyndicationContent textContent = new TextSyndicationContent(post.HtmlContent);
+                    SyndicationItem item = new SyndicationItem(post.Title, textContent, new Uri($"https://hyston.blog/{post.FileName}"), post.FileName, post.Created);
+                    items.Add(item);
+                }
+                catch (System.Exception)
+                {
+                    logger.LogError($"Failed to add post {post.FileName} into rss");
+                }
             }
 
             feed.Items = items;

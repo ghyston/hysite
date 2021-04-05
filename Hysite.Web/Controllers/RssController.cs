@@ -16,7 +16,8 @@ namespace hySite
         }
 
         [ResponseCache(Duration=60)]
-        [HttpGet]
+        [HttpGet("/rss")]
+        
         public FileStreamResult Index()
         {
             var rssPath = String.Join('/', configuration["PostsLocalPath"], configuration["RssFeedFile"]);

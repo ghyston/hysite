@@ -107,7 +107,8 @@ namespace hySite
             DateTime postCreated;
             try
             {
-                postCreated = DateTime.ParseExact(timeStr, dateFormat, CultureInfo.InvariantCulture);
+                var parsedDate = DateTime.ParseExact(timeStr, dateFormat, CultureInfo.InvariantCulture);
+                postCreated = DateTime.SpecifyKind(parsedDate, DateTimeKind.Utc);
             }
             catch (FormatException) 
             {

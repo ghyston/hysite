@@ -11,7 +11,7 @@ namespace hySite
             var env = Environment.GetEnvironmentVariable("HYSITE_VERSION");
             return (env is null) 
                 ? "unknown"
-                : env.Substring(0, 7);
+                : env.Substring(0, Math.Min(7, env.Length));
         }
 
         public string GetFrameworkVersion() => 

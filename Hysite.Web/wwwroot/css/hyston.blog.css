@@ -37,6 +37,13 @@ body {
     text-align: center;
   }
 
+  .jsfree {
+    display: inline-block;
+    padding-left: 30px;
+    font-size: 12pt;
+    color: lightblue;
+  }
+
   pre {    
     overflow-x: auto;
   }

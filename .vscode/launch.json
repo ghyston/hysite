@@ -31,7 +31,7 @@
             },
             "env": {
                 "ASPNETCORE_ENVIRONMENT": "Development",
-                "HYSITE_VERSION": "local(todo)"
+                "HYSITE_VERSION": "debug"
             },
             "sourceFileMap": {
                 "/Views": "${workspaceFolder}/Views"

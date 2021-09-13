@@ -65,7 +65,7 @@ namespace hySite
             try
             {
                 var co = new CloneOptions();
-                co.CredentialsProvider = (_url, _user, _cred) => new UsernamePasswordCredentials { Username = settings.GitUser, Password = settings.GitPass };
+                co.CredentialsProvider = (_url, _user, _cred) => new UsernamePasswordCredentials { Username = settings.GitUser, Password = settings.GithubToken };
                 co.Checkout = true;
                 co.BranchName = "publish";
                 Repository.Clone(settings.GitUrl, settings.LocalPath, co);

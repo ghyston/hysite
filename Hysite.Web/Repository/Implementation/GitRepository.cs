@@ -19,7 +19,7 @@ namespace hySite
             public string GitUrl {get; set;}
             public string LocalPath {get; set;}
             public string GitUser {get; set;}
-            public string GitPass {get; set;}
+            public string GithubToken {get; set;}
 
             public string Validate()
             {
@@ -32,8 +32,8 @@ namespace hySite
                 if(string.IsNullOrWhiteSpace(GitUser))
                     return "GitUser is empty";
 
-                if(string.IsNullOrWhiteSpace(GitPass))
-                    return "GitPass is empty";
+                if(string.IsNullOrWhiteSpace(GithubToken))
+                    return "GithubToken is empty";
 
                 return null;
             }
@@ -50,7 +50,7 @@ namespace hySite
             GitUrl = _configuration["PostsGitUrl"],
             LocalPath = _configuration["PostsLocalPath"],
             GitUser = _configuration["GithubUser"],
-            GitPass = _configuration["GithubPass"] 
+            GithubToken = _configuration["GithubToken"] 
         };
 
         public IResult Clone()
@@ -93,7 +93,7 @@ namespace hySite
                     options.FetchOptions.CredentialsProvider = (_url, _user, _cred) => 
                         new UsernamePasswordCredentials { 
                             Username = settings.GitUser, 
-                            Password = settings.GitPass };
+                            Password = settings.GithubToken };
 
                     var signature = new LibGit2Sharp.Signature(new Identity(settings.GitUser, settings.GitUser), DateTime.Now);
                     Commands.Pull(repo, signature, options);

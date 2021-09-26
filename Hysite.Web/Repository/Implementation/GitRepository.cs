@@ -50,7 +50,7 @@ namespace hySite
             GitUrl = _configuration["PostsGitUrl"],
             LocalPath = _configuration["PostsLocalPath"],
             GitUser = _configuration["GithubUser"],
-            GithubToken = _configuration["GithubToken"] 
+            GithubToken = Environment.GetEnvironmentVariable("READER_TOKEN") ?? string.Empty
         };
 
         public IResult Clone()

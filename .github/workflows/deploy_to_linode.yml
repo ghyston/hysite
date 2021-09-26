@@ -28,6 +28,7 @@ jobs:
           build-args: |
             HYSITE_VERSION=${{ github.sha }}
             PFX_PASSWORD=${{ secrets.PFX_PASSWORD }}
+            READER_TOKEN=${{ secrets.READER_TOKEN }}
 
       - run: docker push hyston/hysite:latest
 

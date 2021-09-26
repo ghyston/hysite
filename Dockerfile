@@ -12,6 +12,9 @@ FROM mcr.microsoft.com/dotnet/aspnet:5.0-focal
 ARG HYSITE_VERSION="latest"
 ENV HYSITE_VERSION=$HYSITE_VERSION
 
+ARG READER_TOKEN
+ENV READER_TOKEN=$READER_TOKEN
+
 ARG PFX_PASSWORD
 ENV ASPNETCORE_Kestrel__Certificates__Default__Password=${PFX_PASSWORD}
 ENV ASPNETCORE_Kestrel__Certificates__Default__Path=/app/cert/certificate.pfx

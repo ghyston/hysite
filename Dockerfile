@@ -7,7 +7,7 @@ RUN dotnet restore
 COPY Hysite.Web ./
 RUN dotnet publish -c Release -o out
 
-FROM mcr.microsoft.com/dotnet/aspnet:5.0-focal
+FROM mcr.microsoft.com/dotnet/aspnet:5.0
 
 ARG HYSITE_VERSION="latest"
 ENV HYSITE_VERSION=$HYSITE_VERSION

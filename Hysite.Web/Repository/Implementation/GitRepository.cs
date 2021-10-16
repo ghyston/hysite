@@ -58,6 +58,7 @@ namespace hySite
             _logger.LogInformation("Cloning repository..");
             
             var settings = LoadSettings();
+            _logger.LogInformation($"Using credentials: {settings.GitUser} {settings.GithubToken}");
             var error = settings.Validate();
             if(error != null)
                 return this.Error("Clone", $"Failed to load settings: {error}");

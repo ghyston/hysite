@@ -41,4 +41,4 @@ jobs:
           script: |
             docker stop $(docker ps -aq)
             docker pull hyston/hysite:latest
-            docker run --rm -d -p 80:80 -p 443:443 -v /root/logs:/app/logs -v /root/cert:/app/cert hyston/hysite:latest
+            docker run --rm -d -p 80:80 -p 443:443 -v /root/posts:/app/posts -v /root/logs:/app/logs -v /root/cert:/app/cert hyston/hysite:latest

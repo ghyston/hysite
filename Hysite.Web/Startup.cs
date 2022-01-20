@@ -121,11 +121,11 @@ namespace hySite
                 FileProvider = new PhysicalFileProvider(imagesFullPth),
                 RequestPath = new PathString("")
             });
-            app.UseStaticFiles(new StaticFileOptions()
-            {
-                FileProvider = new PhysicalFileProvider(postsFullPath),
-                RequestPath = new PathString("/.well-known/pki-validation") //@todo: this is for https cert validation, probably can be removed später?
-            });
+            //app.UseStaticFiles(new StaticFileOptions()
+            //{
+            //    FileProvider = new PhysicalFileProvider(postsFullPath),
+            //    RequestPath = new PathString("/.well-known/pki-validation") //@todo: this is for https cert validation, probably can be removed später?
+            //});
 
             app.UseRouting();
             app.UseHttpsRedirection();

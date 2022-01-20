@@ -12,3 +12,4 @@ This is a small hobby project for learning .net development and deployment. Actu
 * posts are markdown files with custom header
 * hosted on [linode](http://linode.com/) linux vm, running in docker
 * actual site is here: [Hyston Blog](https://hyston.blog/)
+

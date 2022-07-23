@@ -69,10 +69,7 @@ namespace hySite
             IGitRepository gitRepository,
             IVersionService versionService,
             IConfiguration configuration)
-        {
-            var logger = serviceProvider.GetService<ILogger<Startup>>();
-
-            logger.LogInformation("Staaaart UP!");
+        {   
             var logsPath = configuration["LogsLocalPath"];
             if (!Directory.Exists(logsPath))
                 Directory.CreateDirectory(logsPath);
@@ -80,6 +77,7 @@ namespace hySite
             loggerFactory.AddFile(logsPath + "/hysite-{Date}.log");
 
             var logger = loggerFactory.CreateLogger("startup");
+            logger.LogInformation("Staaaart UP!");
             var version = versionService.GetCurrentGitSHA();
             logger.LogWarning($"git commit: {version}");
 

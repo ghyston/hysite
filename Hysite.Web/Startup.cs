@@ -98,7 +98,7 @@ namespace hySite
                 if(Directory.Exists(postsPath))
                     Directory.Delete(postsPath, recursive: true);
 
-                gitRepository.Clone();
+                //gitRepository.Clone();
             }
             
             var postsFullPath = Path.Combine(Directory.GetCurrentDirectory(), postsPath);

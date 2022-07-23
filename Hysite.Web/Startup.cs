@@ -22,14 +22,11 @@ namespace hySite
     {
         private IWebHostEnvironment _webHostingEnviroment;
         private IConfiguration _configuration;
-        private ILogger<Startup> _logger;
 
-
-        public Startup(IConfiguration configuration, IWebHostEnvironment env, ILogger<Startup> logger)
+        public Startup(IConfiguration configuration, IWebHostEnvironment env)
         {
             _configuration = configuration;  
             _webHostingEnviroment = env;
-            _logger = logger;
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -73,7 +70,9 @@ namespace hySite
             IVersionService versionService,
             IConfiguration configuration)
         {
-            _logger.LogInformation("Staaaart UP!");
+            var logger = serviceProvider.GetService<ILogger<Startup>>();
+
+            logger.LogInformation("Staaaart UP!");
             var logsPath = configuration["LogsLocalPath"];
             if (!Directory.Exists(logsPath))
                 Directory.CreateDirectory(logsPath);
@@ -106,13 +105,13 @@ namespace hySite
 
             // Temp
             var files = Directory.GetFiles("/app/cert/");
-            _logger.LogInformation("certs folder content:");
+            logger.LogInformation("certs folder content:");
             foreach (var file in files)
             {
-                _logger.LogInformation(file);
+                logger.LogInformation(file);
             }
-            _logger.LogInformation($"Kestrel path: {configuration["Kestrel:Certificates:Default:Path"]}");
-            _logger.LogInformation($"Kestrel keypath: {configuration["Kestrel:Certificates:Default:KeyPath"]}");
+            logger.LogInformation($"Kestrel path: {configuration["Kestrel:Certificates:Default:Path"]}");
+            logger.LogInformation($"Kestrel keypath: {configuration["Kestrel:Certificates:Default:KeyPath"]}");
             // End temp
             
             var postsFullPath = Path.Combine(Directory.GetCurrentDirectory(), postsPath);

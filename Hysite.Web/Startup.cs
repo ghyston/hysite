@@ -73,6 +73,7 @@ namespace hySite
             IVersionService versionService,
             IConfiguration configuration)
         {
+            _logger.LogInformation("Staaaart UP!");
             var logsPath = configuration["LogsLocalPath"];
             if (!Directory.Exists(logsPath))
                 Directory.CreateDirectory(logsPath);
@@ -100,7 +101,7 @@ namespace hySite
                 if(Directory.Exists(postsPath))
                     Directory.Delete(postsPath, recursive: true);
 
-                gitRepository.Clone();
+                //gitRepository.Clone();
             }
 
             // Temp

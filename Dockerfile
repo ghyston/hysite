@@ -15,9 +15,6 @@ ENV HYSITE_VERSION=$HYSITE_VERSION
 ARG READER_TOKEN
 ENV READER_TOKEN=$READER_TOKEN
 
-ENV ASPNETCORE_Kestrel__Certificates__Default__Path=/app/cert/fullchain.pem
-ENV ASPNETCORE_Kestrel__Certificates__Default__KeyPath=/app/cert/privkey.pem
-
 WORKDIR /app
 COPY --from=build /app/out .
 ENV ASPNETCORE_URLS https://+;http://+

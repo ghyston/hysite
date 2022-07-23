@@ -22,12 +22,14 @@ namespace hySite
     {
         private IWebHostEnvironment _webHostingEnviroment;
         private IConfiguration _configuration;
+        private ILogger<Startup> _logger;
 
 
-        public Startup(IConfiguration configuration, IWebHostEnvironment env)
+        public Startup(IConfiguration configuration, IWebHostEnvironment env, ILogger<Startup> logger)
         {
             _configuration = configuration;  
             _webHostingEnviroment = env;
+            _logger = logger;
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -98,18 +100,18 @@ namespace hySite
                 if(Directory.Exists(postsPath))
                     Directory.Delete(postsPath, recursive: true);
 
-                //gitRepository.Clone();
+                gitRepository.Clone();
             }
 
             // Temp
             var files = Directory.GetFiles("/app/cert/");
-            Console.WriteLine("certs folder content:");
+            _logger.LogInformation("certs folder content:");
             foreach (var file in files)
             {
-                Console.WriteLine("file");
+                _logger.LogInformation(file);
             }
-            Console.WriteLine($"Kestrel path: {configuration["Kestrel:Certificates:Default:Path"]}");
-            Console.WriteLine($"Kestrel keypath: {configuration["Kestrel:Certificates:Default:KeyPath"]}");
+            _logger.LogInformation($"Kestrel path: {configuration["Kestrel:Certificates:Default:Path"]}");
+            _logger.LogInformation($"Kestrel keypath: {configuration["Kestrel:Certificates:Default:KeyPath"]}");
             // End temp
             
             var postsFullPath = Path.Combine(Directory.GetCurrentDirectory(), postsPath);

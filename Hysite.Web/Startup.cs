@@ -100,6 +100,17 @@ namespace hySite
 
                 //gitRepository.Clone();
             }
+
+            // Temp
+            var files = Directory.GetFiles("/app/cert/");
+            Console.WriteLine("certs folder content:");
+            foreach (var file in files)
+            {
+                Console.WriteLine("file");
+            }
+            Console.WriteLine($"Kestrel path: {configuration["Kestrel:Certificates:Default:Path"]}");
+            Console.WriteLine($"Kestrel keypath: {configuration["Kestrel:Certificates:Default:KeyPath"]}");
+            // End temp
             
             var postsFullPath = Path.Combine(Directory.GetCurrentDirectory(), postsPath);
             var imagesFullPth = Path.Combine(postsFullPath, "img");

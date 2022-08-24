@@ -3,19 +3,20 @@ using System.Collections.Generic;
 using System.ServiceModel.Syndication;
 using System.Xml;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace hySite
 {
     public class RssFeedService : IRssFeedService
     {
-        private readonly IBlogPostRepository blogPostRepository;
+        private readonly IServiceProvider serviceProvider;
         private readonly IConfiguration configuration;
         private readonly ILogger<RssFeedService> logger;
 
-        public RssFeedService(IBlogPostRepository blogPostRepository, IConfiguration configuration, ILogger<RssFeedService> logger)
+        public RssFeedService(IServiceProvider serviceProvider, IConfiguration configuration, ILogger<RssFeedService> logger)
         {
-            this.blogPostRepository = blogPostRepository;
+            this.serviceProvider = serviceProvider;
             this.configuration = configuration;
             this.logger = logger;
         }
@@ -26,6 +27,7 @@ namespace hySite
             SyndicationPerson sp = new SyndicationPerson("ghyston@gmail.com (Ilja Stepanow)", "Ilja Stepanow", "https://hyston.blog");
             feed.Authors.Add(sp);
 
+            var blogPostRepository = serviceProvider.GetService<IBlogPostRepository>();
             var allPosts = blogPostRepository.RetrieveAll();
             List<SyndicationItem> items = new List<SyndicationItem>();
             

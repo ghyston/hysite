@@ -1,5 +1,7 @@
 ﻿using System.IO;
+using System.Reflection;
 using hySite;
+using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
@@ -18,15 +20,17 @@ builder.Logging.AddConsole();
 // Configure services
 builder.Services.AddControllers();
 builder.Services.AddRazorPages()
-    .AddRazorPagesOptions(options => {
-    options.Conventions.AddPageRoute("/Index", "");
-    options.Conventions.AddPageRoute("/Post", "{postname}");
+	.AddRazorPagesOptions(options => {
+	options.Conventions.AddPageRoute("/Index", "");
+	options.Conventions.AddPageRoute("/Post", "{postname}");
 });
+
+builder.Services.AddMediatR(Assembly.GetExecutingAssembly());
 
 //TODO: this or app.UseHttpsRedirection ?
 builder.Services.AddHttpsRedirection(options =>
 {
-    options.RedirectStatusCode = StatusCodes.Status307TemporaryRedirect;
+	options.RedirectStatusCode = StatusCodes.Status307TemporaryRedirect;
 });
 
 
@@ -49,7 +53,7 @@ var app = builder.Build();
 // Configure app
  var logsPath = app.Configuration["LogsLocalPath"];
 if (!Directory.Exists(logsPath))
-    Directory.CreateDirectory(logsPath);
+	Directory.CreateDirectory(logsPath);
 
 
 
@@ -65,11 +69,11 @@ app.Logger.LogWarning($"git commit: {version}");
 
 if (app.Environment.IsDevelopment())
 {
-    app.UseDeveloperExceptionPage();
+	app.UseDeveloperExceptionPage();
 }
 else
 {
-    app.UseExceptionHandler("/Error");
+	app.UseExceptionHandler("/Error");
 }
 
 var postsPath = app.Configuration["PostsLocalPath"];
@@ -77,20 +81,20 @@ var postsPath = app.Configuration["PostsLocalPath"];
 var configParsed = bool.TryParse(app.Configuration["loadFromGit"], out bool loadFromGit);
 if(configParsed && loadFromGit)
 {
-    if(Directory.Exists(postsPath))
-        Directory.Delete(postsPath, recursive: true);
+	if(Directory.Exists(postsPath))
+		Directory.Delete(postsPath, recursive: true);
 
-    //gitRepository.Clone();
+	//gitRepository.Clone();
 }
 
 // Temp
 var directoryToCheck = "/app/cert/";
 if(Directory.Exists(directoryToCheck))
 {
-    var files = Directory.GetFiles("/app/cert/");
-    app.Logger.LogInformation("certs folder content:");
-    foreach (var file in files)
-        app.Logger.LogInformation(file);
+	var files = Directory.GetFiles("/app/cert/");
+	app.Logger.LogInformation("certs folder content:");
+	foreach (var file in files)
+		app.Logger.LogInformation(file);
 }
 app.Logger.LogInformation($"Kestrel path: {app.Configuration["Kestrel:Certificates:Default:Path"]}");
 app.Logger.LogInformation($"Kestrel keypath: {app.Configuration["Kestrel:Certificates:Default:KeyPath"]}");
@@ -100,32 +104,32 @@ var postsFullPath = Path.Combine(Directory.GetCurrentDirectory(), postsPath);
 var imagesFullPth = Path.Combine(postsFullPath, "img");
 
 if(!Directory.Exists(postsFullPath))
-    Directory.CreateDirectory(postsFullPath);
+	Directory.CreateDirectory(postsFullPath);
 
 if(!Directory.Exists(imagesFullPth))
-    Directory.CreateDirectory(imagesFullPth);
+	Directory.CreateDirectory(imagesFullPth);
 
 app.UseStaticFiles();
 app.UseStaticFiles(new StaticFileOptions()
 {                
-    FileProvider = new PhysicalFileProvider(postsFullPath),
-    RequestPath = new PathString("")
+	FileProvider = new PhysicalFileProvider(postsFullPath),
+	RequestPath = new PathString("")
 });
 app.UseStaticFiles(new StaticFileOptions()
 {                
-    FileProvider = new PhysicalFileProvider(imagesFullPth),
-    RequestPath = new PathString("")
+	FileProvider = new PhysicalFileProvider(imagesFullPth),
+	RequestPath = new PathString("")
 });
 
 app.UseRouting();
 app.UseHttpsRedirection();
 app.UseEndpoints(endpoints => 
 {
-    endpoints.MapRazorPages();
-    endpoints.MapControllerRoute(
-        name: "default",
-        pattern: "{controller=Home}/{action=Index}/{id?}"
-    );
+	endpoints.MapRazorPages();
+	endpoints.MapControllerRoute(
+		name: "default",
+		pattern: "{controller=Home}/{action=Index}/{id?}"
+	);
 });
 
 //TODO: use IHostService for that!

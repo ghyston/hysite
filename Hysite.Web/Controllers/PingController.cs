@@ -1,28 +1,23 @@
-using System;
 using Microsoft.AspNetCore.Mvc;
 
-namespace hySite 
+using hysite.Queries;
+
+using MediatR;
+using System.Threading.Tasks;
+
+namespace hySite; 
+
+public class PingController : Controller 
 {
-    public class PingController : Controller 
-    {
-        private readonly IViewStatisticRepository _viewStatisticRepository;
-        public PingController(IViewStatisticRepository viewStatisticRepository)
-        {
-            _viewStatisticRepository = viewStatisticRepository;
-        }
+    private readonly IMediator _mediatr;
 
-        [Route("ping")]
-        public IActionResult Index()
-        {
-            return Ok();
-        }
+    public PingController(IMediator mediatr) => this._mediatr = mediatr;
 
-        [Route("lastweek")]
-        public IActionResult LastWeekViews()
-        {
-            return Ok(_viewStatisticRepository.ViewsFrom(DateTime.Now.AddDays(-7)));
-        }
-        
-    }
+    [Route("ping")]
+    public IActionResult Index() => Ok();
+
+    [Route("lastweek")]
+    public async Task<IActionResult> LastWeekViews() => 
+        Ok(await _mediatr.Send(new LastWeekViewsQuery()));
 }
 

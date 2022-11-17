@@ -1,9 +1,11 @@
 
 
-namespace hySite 
+using System.Threading;
+using System.Threading.Tasks;
+
+namespace hySite; 
+
+public interface IRssFeedService
 {
-    public interface IRssFeedService
-    {
-        void CreateRssFeed();
-    }
+    Task CreateRssFeed(string rssPath, CancellationToken cancellationToken);
 }

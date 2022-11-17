@@ -1,59 +1,55 @@
 using System;
-using System.Collections.Generic;
+using System.Linq;
 using System.ServiceModel.Syndication;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Xml;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
+using Microsoft.EntityFrameworkCore;
 
-namespace hySite
+namespace hySite;
+
+public class RssFeedService : IRssFeedService
 {
-    public class RssFeedService : IRssFeedService
+    private readonly AppDbContext appDbContext;
+
+    public RssFeedService(AppDbContext appDbContext)
     {
-        private readonly IServiceProvider serviceProvider;
-        private readonly IConfiguration configuration;
-        private readonly ILogger<RssFeedService> logger;
+        this.appDbContext = appDbContext;
+    }
 
-        public RssFeedService(IServiceProvider serviceProvider, IConfiguration configuration, ILogger<RssFeedService> logger)
-        {
-            this.serviceProvider = serviceProvider;
-            this.configuration = configuration;
-            this.logger = logger;
-        }
+    public async Task CreateRssFeed(string rssPath, CancellationToken cancellationToken)
+    {
+        var feed = new SyndicationFeed(
+            title: "Hyston blog", 
+            description: "Mumblings about programblings", 
+            feedAlternateLink: new Uri("https://hyston.blog/rss"), 
+            id: "hyston.blog", 
+            lastUpdatedTime: DateTime.Now);
+        var person = new SyndicationPerson(
+            email: "ghyston@gmail.com (Ilja Stepanow)", 
+            name: "Ilja Stepanow", 
+            uri: "https://hyston.blog");
+        feed.Authors.Add(person);
 
-        public void CreateRssFeed()
-        {
-            SyndicationFeed feed = new SyndicationFeed("Hyston blog", "Mumblings about programblings", new Uri("https://hyston.blog/rss"), "hyston.blog", DateTime.Now);
-            SyndicationPerson sp = new SyndicationPerson("ghyston@gmail.com (Ilja Stepanow)", "Ilja Stepanow", "https://hyston.blog");
-            feed.Authors.Add(sp);
+        var allPosts = await appDbContext
+             .BlogPosts
+             .OrderByDescending(p => p.Created)
+             .ToListAsync(cancellationToken);
 
-            var blogPostRepository = serviceProvider.GetService<IBlogPostRepository>();
-            var allPosts = blogPostRepository.RetrieveAll();
-            List<SyndicationItem> items = new List<SyndicationItem>();
-            
-            foreach(var post in allPosts)
-            {
-                try
-                {
-                    TextSyndicationContent textContent = new TextSyndicationContent(post.HtmlContent);
-                    SyndicationItem item = new SyndicationItem(post.Title, textContent, new Uri($"https://hyston.blog/{post.FileName}"), post.FileName, post.Created);
-                    items.Add(item);
-                }
-                catch (System.Exception)
-                {
-                    logger.LogError($"Failed to add post {post.FileName} into rss");
-                }
-            }
+        var items = allPosts.Select(post => new SyndicationItem(
+            title: post.Title, 
+            new TextSyndicationContent(post.HtmlContent), 
+            new Uri($"https://hyston.blog/{post.FileName}"), 
+            post.FileName, 
+            post.Created));
 
-            feed.Items = items;
-            feed.Language = "en-us";
-            feed.LastUpdatedTime = DateTime.Now;
+        feed.Items = items;
+        feed.Language = "en-us";
+        feed.LastUpdatedTime = DateTime.Now;
 
-            var rssPath = String.Join('/', configuration["PostsLocalPath"], configuration["RssFeedFile"]);
-            XmlWriter rssWriter = XmlWriter.Create(rssPath);
-            Rss20FeedFormatter rssFormatter = new Rss20FeedFormatter(feed);
-            rssFormatter.WriteTo(rssWriter);
-            rssWriter.Close();
-        }
+        var rssWriter = XmlWriter.Create(rssPath);
+        var rssFormatter = new Rss20FeedFormatter(feed);
+        rssFormatter.WriteTo(rssWriter);
+        rssWriter.Close();
     }
 }

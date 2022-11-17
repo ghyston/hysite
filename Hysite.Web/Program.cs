@@ -41,7 +41,7 @@ builder.Services.AddScoped<IBlogPostRepository, BlogPostRepository>(); //Scoped 
 builder.Services.AddScoped<IViewStatisticRepository, ViewStatisticRepository>(); //Scoped has lifetime per request
 builder.Services.AddTransient<IGitRepository, GitRepository>();
 builder.Services.AddTransient<IFileParserService, FileParserService>(); //Transient created each time
-builder.Services.AddSingleton<IRssFeedService, RssFeedService>();
+builder.Services.AddScoped<IRssFeedService, RssFeedService>();
 builder.Services.AddSingleton<IVersionService, VersionService>();
 builder.Services.AddTransient<IHandler<IncrementViewsHandlerRequest, IncrementViewsHandlerResponse>, IncrementViewsHandlerHandler>();
 
@@ -54,10 +54,6 @@ var app = builder.Build();
  var logsPath = app.Configuration["LogsLocalPath"];
 if (!Directory.Exists(logsPath))
 	Directory.CreateDirectory(logsPath);
-
-
-
-
 
 
 app.Logger.LogInformation("Staaaart UP!");

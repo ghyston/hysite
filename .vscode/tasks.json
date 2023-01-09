@@ -7,7 +7,7 @@
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/Hysite.Web/hysite.csproj"
+                "${workspaceFolder}/Hysite.sln"
             ],
             "problemMatcher": "$msCompile"
         },

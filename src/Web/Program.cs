@@ -27,26 +27,15 @@ builder.Services.AddRazorPages()
 
 builder.Services.AddMediatR(Assembly.GetExecutingAssembly());
 
-//TODO: this or app.UseHttpsRedirection ?
 builder.Services.AddHttpsRedirection(options =>
 {
 	options.RedirectStatusCode = StatusCodes.Status307TemporaryRedirect;
 });
 
 
-//@todo: use one postsFileProvider
 builder.Services.AddSingleton<IFileProvider>(builder.Environment.ContentRootFileProvider);
 builder.Services.AddDbContext<AppDbContext>(options => options.UseInMemoryDatabase("db"));
-builder.Services.AddScoped<IBlogPostRepository, BlogPostRepository>(); //Scoped has lifetime per request
-builder.Services.AddScoped<IViewStatisticRepository, ViewStatisticRepository>(); //Scoped has lifetime per request
-builder.Services.AddTransient<IGitRepository, GitRepository>();
-builder.Services.AddTransient<IFileParserService, FileParserService>(); //Transient created each time
-builder.Services.AddScoped<IRssFeedService, RssFeedService>();
 builder.Services.AddSingleton<IVersionService, VersionService>();
-builder.Services.AddTransient<IHandler<IncrementViewsHandlerRequest, IncrementViewsHandlerResponse>, IncrementViewsHandlerHandler>();
-
-//builder.Services.BuildServiceProvider() //TODO: why do we need that?
-
 
 var app = builder.Build();
 

@@ -2,7 +2,7 @@ name: Build docker image, push to dockerhub, deploy on linode
 
 on:
   push:
-    branches: [ backToLinode, master ]
+    branches: [ backToLinode, master, '2023' ]
 
 jobs:
 

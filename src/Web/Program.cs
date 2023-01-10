@@ -1,7 +1,5 @@
 ﻿using System.IO;
 using System.Reflection;
-using hySite;
-using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
@@ -9,6 +7,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using HySite.Application.Interfaces;
+using HySite.Infrastructure;
+using HySite.Web;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Logging.ClearProviders();
@@ -18,24 +19,17 @@ builder.Logging.AddConsole();
 
 
 // Configure services
-builder.Services.AddControllers();
-builder.Services.AddRazorPages()
-	.AddRazorPagesOptions(options => {
-	options.Conventions.AddPageRoute("/Index", "");
-	options.Conventions.AddPageRoute("/Post", "{postname}");
-});
 
-builder.Services.AddMediatR(Assembly.GetExecutingAssembly());
-
-builder.Services.AddHttpsRedirection(options =>
-{
-	options.RedirectStatusCode = StatusCodes.Status307TemporaryRedirect;
-});
+//builder.Services.AddMediatR(Assembly.GetExecutingAssembly());
 
 
-builder.Services.AddSingleton<IFileProvider>(builder.Environment.ContentRootFileProvider);
-builder.Services.AddDbContext<AppDbContext>(options => options.UseInMemoryDatabase("db"));
-builder.Services.AddSingleton<IVersionService, VersionService>();
+//builder.Services.AddSingleton<IFileProvider>(builder.Environment.ContentRootFileProvider);
+
+builder.Services.AddWebPresentation();
+builder.Services.AddInfrastructure();
+
+//builder.Services.AddDbContext<AppDbContext>(options => options.UseInMemoryDatabase("db"));
+//builder.Services.AddSingleton<IVersionService, VersionService>();
 
 var app = builder.Build();
 
@@ -63,14 +57,14 @@ else
 
 var postsPath = app.Configuration["PostsLocalPath"];
 
-var configParsed = bool.TryParse(app.Configuration["loadFromGit"], out bool loadFromGit);
+/*var configParsed = bool.TryParse(app.Configuration["loadFromGit"], out bool loadFromGit);
 if(configParsed && loadFromGit)
 {
 	if(Directory.Exists(postsPath))
 		Directory.Delete(postsPath, recursive: true);
 
-	//gitRepository.Clone();
-}
+	gitRepository.Clone();
+}*/
 
 // Temp
 var directoryToCheck = "/app/cert/";

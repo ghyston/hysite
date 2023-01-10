@@ -1,6 +1,6 @@
 using System;
 
-namespace hySite;
+namespace HySite.Domain.Model;
 
 public class ViewStatistic
 {

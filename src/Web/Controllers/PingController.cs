@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 
-namespace hySite; 
+namespace HySite.Web.Controllers;
 
 public class PingController : Controller 
 {

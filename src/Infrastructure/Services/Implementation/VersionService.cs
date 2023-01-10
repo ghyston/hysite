@@ -1,8 +1,9 @@
 using System;
 using System.Reflection;
 using System.Runtime.Versioning;
+using HySite.Application.Interfaces;
 
-namespace hySite;
+namespace HySite.Infrastructure.Services;
 
 public class VersionService : IVersionService
 {

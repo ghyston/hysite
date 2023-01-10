@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using HySite.Application.Interfaces;
+using HySite.Domain.Model;
 
-namespace hySite;
+namespace HySite.Web.Pages;
 
 public class AboutModel : PageModel
 {

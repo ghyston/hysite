@@ -3,7 +3,7 @@ using HySite.Domain.Model;
 
 namespace HySite.Infrastructure.Persistance;
 
-public class AppDbContext : DbContext
+public class AppDbContext : DbContext, IHysiteContext
 {
     public AppDbContext(DbContextOptions options)
         : base(options)
@@ -11,6 +11,6 @@ public class AppDbContext : DbContext
 
     }
 
-    public DbSet<BlogPost> BlogPosts { get; set; }
-    public DbSet<ViewStatistic> ViewStatistics { get; set; }
+    public DbSet<BlogPost> BlogPosts => Set<BlogPost>();
+    public DbSet<ViewStatistic> ViewStatistics => Set<ViewStatistic>();
 }

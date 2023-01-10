@@ -2,19 +2,20 @@
 
 @model HySite.Web.Pages.IndexModel
 
-@foreach (var item in @Model.Posts) {
-
-    @Html.Partial("BlogEntry", item)
+@foreach (var item in @Model.Posts)
+{
+    <partial name="BlogEntry" model="item" />
 }
 
-@if(@Model.NextPage != null)
+@if (@Model.NextPage != null)
 {
     <a class="navigation" style="float: left" href="/@Model.NextPage">&#8592; Next</a>
 }
 
-@if(@Model.PrevPage != null)
+@if (@Model.PrevPage != null)
 {
     <a class="navigation" style="float: right" href="/@Model.PrevPage">Previous &#8594;</a>
 }
 
-<div class="copyright">&copy; Copyright @DateTime.Now.Year version: @Model.Version <p class="jsfree">100% JS-free</p></div>
+<div class="copyright">&copy; Copyright @DateTime.Now.Year version: @Model.Version <p class="jsfree">100% JS-free</p>
+</div>

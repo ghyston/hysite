@@ -8,16 +8,16 @@ public class BlogPost
     public int Id { get; set; }
 
     [Required, StringLength(100)]
-    public string FileName { get; set; }
+    public string FileName { get; set; } = string.Empty;
 
     [Required, StringLength(100)]
-    public string Title { get; set; }
+    public string Title { get; set; } = string.Empty;
 
     [Required]
-    public string MdContent { get; set; }
+    public string MdContent { get; set; } = string.Empty;
 
     [Required]
-    public string HtmlContent { get; set; }
+    public string HtmlContent { get; set; } = string.Empty;
 
     [Required]
     public DateTime Created {get; set;}

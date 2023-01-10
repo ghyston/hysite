@@ -102,14 +102,9 @@ app.UseStaticFiles(new StaticFileOptions()
 
 app.UseRouting();
 app.UseHttpsRedirection();
-app.UseEndpoints(endpoints => 
-{
-	endpoints.MapRazorPages();
-	endpoints.MapControllerRoute(
-		name: "default",
-		pattern: "{controller=Home}/{action=Index}/{id?}"
-	);
-});
+
+app.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}");
+app.MapRazorPages();
 
 //TODO: use IHostService for that!
 //var fileParser = app.Services.GetService<IFileParserService>();

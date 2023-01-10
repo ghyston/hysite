@@ -7,11 +7,13 @@ namespace HySite.Infrastructure.Services;
 
 public class VersionService : IVersionService
 {
+    private const string UNKNOWN = "unknown";
+
     public string GetCurrentGitSHA()
     {
         var env = Environment.GetEnvironmentVariable("HYSITE_VERSION");
         return (env is null) 
-            ? "unknown"
+            ? UNKNOWN
             : env.Substring(0, Math.Min(7, env.Length));
     }
 
@@ -19,5 +21,5 @@ public class VersionService : IVersionService
         Assembly
         .GetEntryAssembly()?
         .GetCustomAttribute<TargetFrameworkAttribute>()?
-        .FrameworkName;
+        .FrameworkName ?? UNKNOWN;
 }

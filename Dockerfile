@@ -1,13 +1,12 @@
-FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /app
 
-COPY Hysite.Web/hysite.csproj ./
+COPY src ./src
+COPY Hysite.sln ./
 RUN dotnet restore
-
-COPY Hysite.Web ./
 RUN dotnet publish -c Release -o out
 
-FROM mcr.microsoft.com/dotnet/aspnet:5.0
+FROM mcr.microsoft.com/dotnet/aspnet:7.0
 
 ARG HYSITE_VERSION="latest"
 ENV HYSITE_VERSION=$HYSITE_VERSION

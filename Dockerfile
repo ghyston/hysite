@@ -2,7 +2,7 @@ FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /app
 
 COPY src ./src
-COPY Hysite.sln ./
+COPY Hysite.sln ./Hysite.sln
 RUN dotnet restore
 RUN dotnet publish -c Release -o out
 

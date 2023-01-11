@@ -67,11 +67,11 @@ if(configParsed && loadFromGit)
 }*/
 
 // Temp
-var directoryToCheck = app.Configuration["Kestrel:Certificates:Default:Path"];
+var directoryToCheck = "/app/cert/";
 if(Directory.Exists(directoryToCheck))
 {
-	var files = Directory.GetFiles(directoryToCheck);
-	app.Logger.LogInformation("config certs folder content:");
+	var files = Directory.GetFiles("/app/cert/");
+	app.Logger.LogInformation("certs folder content:");
 	foreach (var file in files)
 		app.Logger.LogInformation(file);
 }

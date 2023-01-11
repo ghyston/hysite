@@ -67,6 +67,14 @@ if(configParsed && loadFromGit)
 }*/
 
 // Temp
+var fullchainPath = app.Configuration["Kestrel:Certificates:Default:Path"];
+var privkeyPath = app.Configuration["Kestrel:Certificates:Default:KeyPath"];
+
+if(File.Exists(fullchainPath))
+	app.Logger.LogInformation($"file {fullchainPath} DOES exist!");
+else
+	app.Logger.LogInformation($"file {fullchainPath} does NOT exist!");
+
 var directoryToCheck = "/app/cert/";
 if(Directory.Exists(directoryToCheck))
 {
@@ -75,8 +83,8 @@ if(Directory.Exists(directoryToCheck))
 	foreach (var file in files)
 		app.Logger.LogInformation(file);
 }
-app.Logger.LogInformation($"Kestrel path: {app.Configuration["Kestrel:Certificates:Default:Path"]}");
-app.Logger.LogInformation($"Kestrel keypath: {app.Configuration["Kestrel:Certificates:Default:KeyPath"]}");
+app.Logger.LogInformation($"Kestrel path: {fullchainPath}");
+app.Logger.LogInformation($"Kestrel keypath: {privkeyPath}");
 // End temp
 
 var postsFullPath = Path.Combine(Directory.GetCurrentDirectory(), postsPath);

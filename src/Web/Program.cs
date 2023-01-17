@@ -10,6 +10,7 @@ using Microsoft.Extensions.Logging;
 using HySite.Application.Interfaces;
 using HySite.Infrastructure;
 using HySite.Web;
+using System.Threading.Tasks;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Logging.ClearProviders();
@@ -95,6 +96,20 @@ if(!Directory.Exists(postsFullPath))
 
 if(!Directory.Exists(imagesFullPth))
 	Directory.CreateDirectory(imagesFullPth);
+
+
+
+app.UseStatusCodePages(handler: async statusCodeContext => {	
+	var redirectUrl = statusCodeContext.HttpContext.Response.StatusCode switch
+	{
+		404 => "/LostAndNotFound",
+		_ => "/Error"
+	};
+	
+	statusCodeContext.HttpContext.Response.Redirect(redirectUrl);
+	
+	await Task.CompletedTask;
+});
 
 app.UseStaticFiles();
 app.UseStaticFiles(new StaticFileOptions()

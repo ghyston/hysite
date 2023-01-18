@@ -20,6 +20,6 @@ public class AboutModelTests
 
         //Then
         page.Framework.Should().Be("qbasic");
-        page.Version.Should().Be("1234567");
+        page.Version.Should().Be("123456");
     }
 }

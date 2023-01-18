@@ -14,12 +14,9 @@ public class AboutModel : PageModel
     public AboutModel(IVersionService versionService)
     {
         _versionService = versionService;
+        Version = _versionService.GetCurrentGitSHA();
+        Framework = _versionService.GetFrameworkVersion();
     }
 
-    public IActionResult OnGet()
-    {
-        this.Version = _versionService.GetCurrentGitSHA();
-        this.Framework = _versionService.GetFrameworkVersion();
-        return Page();
-    }
+    public IActionResult OnGet => Page();
 }

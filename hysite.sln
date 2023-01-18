@@ -9,6 +9,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "hysite", "src\Web\hysite.cs
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "src\Domain\Domain.csproj", "{469EB08D-A005-4FB9-A34A-0D70A437A4E0}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{0C6319EB-AE6F-47CC-B6E5-0A173D005665}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Web.UnitTests", "tests\Web.UnitTests\Web.UnitTests.csproj", "{DF8601CD-FC99-4702-A49E-94551AE4E7D4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -26,9 +30,14 @@ Global
 		{469EB08D-A005-4FB9-A34A-0D70A437A4E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{469EB08D-A005-4FB9-A34A-0D70A437A4E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{469EB08D-A005-4FB9-A34A-0D70A437A4E0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DF8601CD-FC99-4702-A49E-94551AE4E7D4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DF8601CD-FC99-4702-A49E-94551AE4E7D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DF8601CD-FC99-4702-A49E-94551AE4E7D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DF8601CD-FC99-4702-A49E-94551AE4E7D4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{D29B4C52-179C-40FF-BAA3-2891EE04F934} = {9948077E-433C-4B91-9797-3C423BC60519}
 		{469EB08D-A005-4FB9-A34A-0D70A437A4E0} = {9948077E-433C-4B91-9797-3C423BC60519}
+		{DF8601CD-FC99-4702-A49E-94551AE4E7D4} = {0C6319EB-AE6F-47CC-B6E5-0A173D005665}
 	EndGlobalSection
 EndGlobal

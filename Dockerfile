@@ -2,6 +2,7 @@ FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /app
 
 COPY src ./src
+COPY tests ./tests
 COPY hysite.sln ./hysite.sln
 RUN dotnet restore
 RUN dotnet publish -c Release -o out

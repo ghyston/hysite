@@ -1,3 +1,4 @@
+using FluentAssertions;
 using HySite.Application.Interfaces;
 using HySite.Web.Pages;
 using Moq;
@@ -18,7 +19,7 @@ public class AboutModelTests
         var page = new AboutModel(versionMock.Object);
 
         //Then
-        page.Framework.Equals("qbasic");
-        page.Version.Equals("1234567");
+        page.Framework.Should().Be("qbasic");
+        page.Version.Should().Be("1234567");
     }
 }

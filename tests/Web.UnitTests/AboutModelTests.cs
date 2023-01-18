@@ -19,6 +19,6 @@ public class AboutModelTests
 
         //Then
         page.Framework.Equals("qbasic");
-        page.Version.Equals("123456");
+        page.Version.Equals("1234567");
     }
 }

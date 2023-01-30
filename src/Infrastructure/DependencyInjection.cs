@@ -10,7 +10,11 @@ public static class DependencyInjection
 {
     public static void AddInfrastructure(this IServiceCollection services)
     {
-        services.AddDbContext<AppDbContext>(options => options.UseInMemoryDatabase("db"));
+        var connectionString = "Host=localhost;Username=maingalaxyroot;Password=themostcomplexone;Database=hysite_local";
+        services.AddDbContext<AppDbContext>(options => options
+            .UseNpgsql(connectionString)
+            .UseSnakeCaseNamingConvention());
+        services.AddScoped<IHysiteContext>(provider => provider.GetService<AppDbContext>()!);
         services.AddSingleton<IVersionService, VersionService>();
     }
     

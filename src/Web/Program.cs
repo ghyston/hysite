@@ -11,6 +11,7 @@ using HySite.Application.Interfaces;
 using HySite.Infrastructure;
 using HySite.Web;
 using System.Threading.Tasks;
+using HySite.Infrastructure.Persistance;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Logging.ClearProviders();
@@ -29,10 +30,11 @@ builder.Logging.AddConsole();
 builder.Services.AddWebPresentation();
 builder.Services.AddInfrastructure();
 
-//builder.Services.AddDbContext<AppDbContext>(options => options.UseInMemoryDatabase("db"));
-//builder.Services.AddSingleton<IVersionService, VersionService>();
-
 var app = builder.Build();
+
+// Automatic migration
+using var dbContext = app.Services.CreateScope().ServiceProvider.GetService<AppDbContext>();
+dbContext?.Database.Migrate();
 
 // Configure app
  var logsPath = app.Configuration["LogsLocalPath"];
@@ -96,8 +98,6 @@ if(!Directory.Exists(postsFullPath))
 
 if(!Directory.Exists(imagesFullPth))
 	Directory.CreateDirectory(imagesFullPth);
-
-
 
 app.UseStatusCodePages(handler: async statusCodeContext => {	
 	var redirectUrl = statusCodeContext.HttpContext.Response.StatusCode switch

@@ -3,14 +3,15 @@ using HySite.Infrastructure.Services;
 using HySite.Application.Interfaces; 
 using HySite.Infrastructure.Persistance;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 namespace HySite.Infrastructure;
 
 public static class DependencyInjection
 {
-    public static void AddInfrastructure(this IServiceCollection services)
+    public static void AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
-        var connectionString = "Host=localhost;Username=maingalaxyroot;Password=themostcomplexone;Database=hysite_local";
+        var connectionString = configuration.GetConnectionString("Database");
         services.AddDbContext<AppDbContext>(options => options
             .UseNpgsql(connectionString)
             .UseSnakeCaseNamingConvention());

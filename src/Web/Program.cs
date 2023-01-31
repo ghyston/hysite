@@ -19,16 +19,13 @@ builder.Logging.AddConsole();
 //TODO: add logger provider for logs into file
 //loggerFactory.AddFile(logsPath + "/hysite-{Date}.log");
 
-
 // Configure services
 
 //builder.Services.AddMediatR(Assembly.GetExecutingAssembly());
-
-
 //builder.Services.AddSingleton<IFileProvider>(builder.Environment.ContentRootFileProvider);
 
 builder.Services.AddWebPresentation();
-builder.Services.AddInfrastructure();
+builder.Services.AddInfrastructure(builder.Configuration);
 
 var app = builder.Build();
 
@@ -42,7 +39,7 @@ if (!Directory.Exists(logsPath))
 	Directory.CreateDirectory(logsPath);
 
 
-app.Logger.LogInformation("Staaaart UP!");
+app.Logger.LogInformation($"Staaaart UP! Env: ${app.Environment.EnvironmentName}");
 
 var versionService = app.Services.GetService<IVersionService>();
 

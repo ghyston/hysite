@@ -61,6 +61,14 @@ jobs:
           username: ${{ secrets.LINODE_USERNAME }}
           password: ${{ secrets.LINODE_PASSWORD }}
           script: |
+            docker run -it -d \
+            -e POSTGRES_USER=postgres \
+            -e POSTGRES_PASSWORD=password \
+            -e POSTGRES_DB=hysite_prod \
+            -v pgdata:/var/lib/postgresql/data \
+            --name hysite_pgsql \
+            -p 5432:5432 \
+            postgres
             docker stop $(docker ps -aq)
             docker pull hyston/hysite:latest
             docker run --rm -d -p 80:80 -p 443:443 \

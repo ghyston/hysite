@@ -31,8 +31,6 @@ builder.Services.AddInfrastructure(builder.Configuration);
 
 var app = builder.Build();
 
-app.Logger.LogError($"Connection Env: {Environment.GetEnvironmentVariable("HYSITE_DB_CONNECTION")} conf: {app.Configuration.GetConnectionString("Database")}");
-
 // Automatic migration
 using var dbContext = app.Services.CreateScope().ServiceProvider.GetService<AppDbContext>();
 dbContext?.Database.Migrate();

@@ -12,10 +12,7 @@ public static class DependencyInjection
 {
     public static void AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
-        var envConnectionStr = Environment.GetEnvironmentVariable("HYSITE_DB_CONNECTION");
-        var connectionString = string.IsNullOrWhiteSpace(envConnectionStr) 
-            ? configuration.GetConnectionString("Database")
-            : envConnectionStr;
+        var connectionString = "Host=hysite_db;Username=postgress;Password=password;Database=hysite_prod";
         
         services.AddDbContext<AppDbContext>(options => options
             .UseNpgsql(connectionString)

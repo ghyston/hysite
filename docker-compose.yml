@@ -1,0 +1,25 @@
+version: '3.9'
+services:
+  hysite:
+    image: hyston/hysite:latest
+    container_name: hysite_web
+    depends_on:
+      - db
+    environment:
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/app/cert/fullchain.pem
+      - ASPNETCORE_Kestrel__Certificates__Default__KeyPath=/app/cert/privkey.pem
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /etc/letsencrypt/prod/hyston.blog:/app/cert
+      - /root/logs:/app/logs
+  db:
+    image: postgres
+    container_name: hysite_db
+    environment:
+      - POSTGRES_USER=postgress
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=hysite_prod
+    ports:
+      - "5432:5432"

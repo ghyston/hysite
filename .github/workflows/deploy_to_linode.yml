@@ -60,20 +60,4 @@ jobs:
           host: ${{ secrets.LINODE_HOST }}
           username: ${{ secrets.LINODE_USERNAME }}
           password: ${{ secrets.LINODE_PASSWORD }}
-          script: |
-            docker run -it -d \
-            -e POSTGRES_USER=postgres \
-            -e POSTGRES_PASSWORD=password \
-            -e POSTGRES_DB=hysite_prod \
-            -v pgdata:/var/lib/postgresql/data \
-            --name hysite_pgsql \
-            -p 5432:5432 \
-            postgres
-            docker stop $(docker ps -aq)
-            docker pull hyston/hysite:latest
-            docker run --rm -d -p 80:80 -p 443:443 \
-            -v /root/logs:/app/logs \
-            -v /etc/letsencrypt/prod/hyston.blog:/app/cert \
-            -e ASPNETCORE_Kestrel__Certificates__Default__Path=/app/cert/fullchain.pem \
-            -e ASPNETCORE_Kestrel__Certificates__Default__KeyPath=/app/cert/privkey.pem \
-            hyston/hysite:latest
+          script: docker compose up

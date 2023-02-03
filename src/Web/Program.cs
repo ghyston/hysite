@@ -39,7 +39,7 @@ if (!Directory.Exists(logsPath))
 	Directory.CreateDirectory(logsPath);
 
 
-app.Logger.LogInformation($"Staaaart UP! Env: ${app.Environment.EnvironmentName}");
+app.Logger.LogInformation($"Staaaart UP! Env: {app.Environment.EnvironmentName}");
 
 var versionService = app.Services.GetService<IVersionService>();
 

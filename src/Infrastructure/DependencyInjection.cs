@@ -4,7 +4,6 @@ using HySite.Application.Interfaces;
 using HySite.Infrastructure.Persistance;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
 
 namespace HySite.Infrastructure;
 
@@ -12,8 +11,7 @@ public static class DependencyInjection
 {
     public static void AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
-        var connectionString = "Host=hysite_db;Username=postgress;Password=password;Database=hysite_prod";
-        
+        var connectionString = configuration.GetConnectionString("Database");
         services.AddDbContext<AppDbContext>(options => options
             .UseNpgsql(connectionString)
             .UseSnakeCaseNamingConvention());

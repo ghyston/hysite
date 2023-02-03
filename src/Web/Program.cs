@@ -12,6 +12,8 @@ using HySite.Infrastructure;
 using HySite.Web;
 using System.Threading.Tasks;
 using HySite.Infrastructure.Persistance;
+using System;
+using Microsoft.Extensions.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Logging.ClearProviders();
@@ -28,6 +30,8 @@ builder.Services.AddWebPresentation();
 builder.Services.AddInfrastructure(builder.Configuration);
 
 var app = builder.Build();
+
+app.Logger.LogError($"Connection Env: {Environment.GetEnvironmentVariable("HYSITE_DB_CONNECTION")} conf: {app.Configuration.GetConnectionString("Database")}");
 
 // Automatic migration
 using var dbContext = app.Services.CreateScope().ServiceProvider.GetService<AppDbContext>();

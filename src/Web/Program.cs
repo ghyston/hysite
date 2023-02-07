@@ -26,10 +26,13 @@ builder.Logging.AddConsole();
 //builder.Services.AddMediatR(Assembly.GetExecutingAssembly());
 //builder.Services.AddSingleton<IFileProvider>(builder.Environment.ContentRootFileProvider);
 
+
 builder.Services.AddWebPresentation();
 builder.Services.AddInfrastructure(builder.Configuration);
 
 var app = builder.Build();
+
+app.Logger.LogInformation("Application builed! 🛠️");
 
 // Automatic migration
 using var dbContext = app.Services.CreateScope().ServiceProvider.GetService<AppDbContext>();

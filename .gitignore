@@ -43,3 +43,6 @@ run_docker_localy.sh
 **/*.md
 *.log
 out/
+
+#local files
+appsettings.Development.json

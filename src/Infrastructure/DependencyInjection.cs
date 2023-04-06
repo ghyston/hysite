@@ -4,7 +4,6 @@ using HySite.Application.Interfaces;
 using HySite.Infrastructure.Persistance;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
 
 namespace HySite.Infrastructure;
 
@@ -22,5 +21,11 @@ public static class DependencyInjection
         services.AddScoped<IHysiteContext>(provider => provider.GetService<AppDbContext>()!);
         services.AddSingleton<IVersionService, VersionService>();
     }
-    
+
+    public static void MigrateDatabase(this IServiceScope scope)
+    {
+        using var dbContext = scope.ServiceProvider.GetService<AppDbContext>();
+        
+        dbContext?.Database.Migrate();
+    }
 }

@@ -1,139 +1,79 @@
 ﻿using System.IO;
-using System.Reflection;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.FileProviders;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using HySite.Application;
 using HySite.Application.Interfaces;
 using HySite.Infrastructure;
 using HySite.Web;
-using System.Threading.Tasks;
-using HySite.Infrastructure.Persistance;
-using System;
-using Microsoft.Extensions.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
-//TODO: add logger provider for logs into file
-//loggerFactory.AddFile(logsPath + "/hysite-{Date}.log");
+
+var logsPath = builder.Configuration["LogsLocalPath"];
+var logsFullPath = EnsureDirectoryExist(Directory.GetCurrentDirectory(), logsPath);
+builder.Logging.AddFile(logsFullPath + "/hysite-{Date}.log");
 
 // Configure services
-
-//builder.Services.AddMediatR(Assembly.GetExecutingAssembly());
-//builder.Services.AddSingleton<IFileProvider>(builder.Environment.ContentRootFileProvider);
-
-
-builder.Services.AddWebPresentation();
+builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
+builder.Services.AddWebPresentation();
 
 var app = builder.Build();
 
-app.Logger.LogInformation("Application builed! 🛠️");
-
-// Automatic migration
-using var dbContext = app.Services.CreateScope().ServiceProvider.GetService<AppDbContext>();
-dbContext?.Database.Migrate();
-
-// Configure app
- var logsPath = app.Configuration["LogsLocalPath"];
-if (!Directory.Exists(logsPath))
-	Directory.CreateDirectory(logsPath);
-
-
-app.Logger.LogInformation($"Staaaart UP! Env: {app.Environment.EnvironmentName}");
-
 var versionService = app.Services.GetService<IVersionService>();
+var config = app.Services.GetService<IConfiguration>();
 
-var version = versionService.GetCurrentGitSHA();
-app.Logger.LogWarning($"git commit: {version}");
+using var scope = app.Services.CreateScope();
 
-if (app.Environment.IsDevelopment())
-{
-	app.UseDeveloperExceptionPage();
-}
-else
-{
-	app.UseExceptionHandler("/Error");
-}
+app.Logger.LogInformation($"Application builded in {app.Environment.EnvironmentName} environment from commit {versionService.GetCurrentGitSHA()}! 🛠️");
+
+scope.MigrateDatabase();
+
+CheckCertificateDirectories(app.Configuration, app.Logger);
 
 var postsPath = app.Configuration["PostsLocalPath"];
+var postsFullPath = EnsureDirectoryExist(Directory.GetCurrentDirectory(), postsPath);
+var imagesFullPath = EnsureDirectoryExist(postsFullPath, "img");
 
-/*var configParsed = bool.TryParse(app.Configuration["loadFromGit"], out bool loadFromGit);
-if(configParsed && loadFromGit)
-{
-	if(Directory.Exists(postsPath))
-		Directory.Delete(postsPath, recursive: true);
-
-	gitRepository.Clone();
-}*/
-
-// Temp
-var fullchainPath = app.Configuration["Kestrel:Certificates:Default:Path"];
-var privkeyPath = app.Configuration["Kestrel:Certificates:Default:KeyPath"];
-
-if(File.Exists(fullchainPath))
-	app.Logger.LogInformation($"file {fullchainPath} DOES exist!");
-else
-	app.Logger.LogInformation($"file {fullchainPath} does NOT exist!");
-
-var directoryToCheck = "/app/cert/";
-if(Directory.Exists(directoryToCheck))
-{
-	var files = Directory.GetFiles("/app/cert/");
-	app.Logger.LogInformation("certs folder content:");
-	foreach (var file in files)
-		app.Logger.LogInformation(file);
-}
-app.Logger.LogInformation($"Kestrel path: {fullchainPath}");
-app.Logger.LogInformation($"Kestrel keypath: {privkeyPath}");
-// End temp
-
-var postsFullPath = Path.Combine(Directory.GetCurrentDirectory(), postsPath);
-var imagesFullPth = Path.Combine(postsFullPath, "img");
-
-if(!Directory.Exists(postsFullPath))
-	Directory.CreateDirectory(postsFullPath);
-
-if(!Directory.Exists(imagesFullPth))
-	Directory.CreateDirectory(imagesFullPth);
-
-app.UseStatusCodePages(handler: async statusCodeContext => {	
-	var redirectUrl = statusCodeContext.HttpContext.Response.StatusCode switch
-	{
-		404 => "/LostAndNotFound",
-		_ => "/Error"
-	};
-	
-	statusCodeContext.HttpContext.Response.Redirect(redirectUrl);
-	
-	await Task.CompletedTask;
-});
-
-app.UseStaticFiles();
-app.UseStaticFiles(new StaticFileOptions()
-{                
-	FileProvider = new PhysicalFileProvider(postsFullPath),
-	RequestPath = new PathString("")
-});
-app.UseStaticFiles(new StaticFileOptions()
-{                
-	FileProvider = new PhysicalFileProvider(imagesFullPth),
-	RequestPath = new PathString("")
-});
-
-app.UseRouting();
-app.UseHttpsRedirection();
-
-app.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}");
-app.MapRazorPages();
-
-//TODO: use IHostService for that!
-//var fileParser = app.Services.GetService<IFileParserService>();
-//fileParser.ParseExistingFiles();
-
+app.SetupRouting(postsFullPath, imagesFullPath);
 
 app.Run();
+
+#region Startup helper functions
+
+void CheckCertificateDirectories(IConfiguration config, ILogger logger)
+{
+    var fullchainPath = config["Kestrel:Certificates:Default:Path"] ?? string.Empty;
+    var privkeyPath = config["Kestrel:Certificates:Default:KeyPath"] ?? string.Empty;
+    var certPath = config["CertPath"] ?? string.Empty;
+
+    if (!File.Exists(fullchainPath))
+        logger.LogWarning($"Certificate file ({fullchainPath}) does NOT exist!");
+
+    if (Directory.Exists(certPath))
+    {
+        var files = Directory.GetFiles(certPath);
+        logger.LogInformation("Cert folder content:");
+        foreach (var file in files)
+            logger.LogInformation(file);
+    }
+
+    logger.LogInformation($"Cert path: {certPath}");
+    logger.LogInformation($"Kestrel path: {fullchainPath}");
+    logger.LogInformation($"Kestrel keypath: {privkeyPath}");
+}
+
+string EnsureDirectoryExist(params string[] subPaths)
+{
+	var fullPath = Path.Combine(subPaths);
+
+	if (!Directory.Exists(fullPath))
+		Directory.CreateDirectory(fullPath);
+
+	return fullPath;
+}
+
+#endregion

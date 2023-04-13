@@ -1,5 +1,6 @@
 using System.IO;
 using System.Threading.Tasks;
+using Hysite.Web.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,6 +13,8 @@ public static class DependencyInjection
 {
     public static void AddWebPresentation(this IServiceCollection services)
     {
+        services.AddHostedService<StartupService>();
+
         services.AddControllers();
         services.AddRazorPages()
             .AddRazorPagesOptions(options =>

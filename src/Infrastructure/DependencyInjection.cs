@@ -20,6 +20,7 @@ public static class DependencyInjection
             .UseSnakeCaseNamingConvention());
         services.AddScoped<IHysiteContext>(provider => provider.GetService<AppDbContext>()!);
         services.AddSingleton<IVersionService, VersionService>();
+        services.AddScoped<IGitService, GitService>();
     }
 
     public static void MigrateDatabase(this IServiceScope scope)

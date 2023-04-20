@@ -18,16 +18,22 @@ public class CloneContentHandler : IRequestHandler<CloneContentCmd>
     private readonly IGitService _gitService;
     private readonly IConfiguration _configuration;
     private readonly IValidator<GitSettingsDto> _settingsValidator;
+    private readonly IFileParserService _fileParserService;
+    private readonly IHysiteContext _dbContext;
     private readonly ILogger<CloneContentHandler> _logger;
 
     public CloneContentHandler(IGitService service,
         IConfiguration configuration,
         IValidator<GitSettingsDto> settingsValidator,
+        IFileParserService fileParserService,
+        IHysiteContext hysiteContext,
         ILogger<CloneContentHandler> logger)
     {
         _gitService = service;
         _configuration = configuration;
         _settingsValidator = settingsValidator;
+        _fileParserService = fileParserService;
+        _dbContext = hysiteContext;
         _logger = logger;
     }
 
@@ -54,6 +60,25 @@ public class CloneContentHandler : IRequestHandler<CloneContentCmd>
         }
 
         _gitService.Clone(settings);
+
+        var postsPath = _configuration["PostsLocalPath"];
+        if(string.IsNullOrWhiteSpace(postsPath))
+        {
+            _logger.LogError($"Posts local path is not set");
+            return Unit.Value;
+        }
+
+        var posts = _fileParserService.ParseExistingFiles(postsPath);
+        if(!posts.Any())
+        {
+            _logger.LogError($"No posts have been loaded");
+            return Unit.Value;
+        }
+
+        _dbContext.BlogPosts.RemoveRange(_dbContext.BlogPosts);
+        _dbContext.BlogPosts.AddRange(posts);
+
+        await _dbContext.SaveChangesAsync(cancellationToken);
 
         return Unit.Value;
     }

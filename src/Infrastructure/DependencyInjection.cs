@@ -13,14 +13,14 @@ public static class DependencyInjection
     {
         var connectionString = configuration.GetConnectionString("Database");
 
-        Console.WriteLine($"Use conection string: {connectionString} ↔️");
-
         services.AddDbContext<AppDbContext>(options => options
             .UseNpgsql(connectionString)
             .UseSnakeCaseNamingConvention());
+    
         services.AddScoped<IHysiteContext>(provider => provider.GetService<AppDbContext>()!);
         services.AddSingleton<IVersionService, VersionService>();
         services.AddScoped<IGitService, GitService>();
+        services.AddScoped<IFileParserService, FileParserService>();
     }
 
     public static void MigrateDatabase(this IServiceScope scope)

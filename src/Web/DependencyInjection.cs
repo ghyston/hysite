@@ -2,6 +2,7 @@ using System.IO;
 using System.Threading.Tasks;
 using Hysite.Web.Services;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
@@ -11,7 +12,7 @@ namespace HySite.Web;
 
 public static class DependencyInjection
 {
-    public static void AddWebPresentation(this IServiceCollection services)
+    public static void AddWebPresentation(this IServiceCollection services, IWebHostEnvironment environment)
     {
         services.AddHostedService<StartupService>();
 
@@ -27,6 +28,8 @@ public static class DependencyInjection
         {
             options.RedirectStatusCode = StatusCodes.Status307TemporaryRedirect;
         });
+
+        services.AddSingleton<IFileProvider>(environment.ContentRootFileProvider);
     }
 
     public static void SetupRouting(this WebApplication app, params string[] pathesForStaticFiles)

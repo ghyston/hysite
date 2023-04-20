@@ -43,11 +43,6 @@ public class StartupService : IHostedService
         using var scope = _serviceScopeFactory.CreateScope();
         var mediator = scope.ServiceProvider.GetService<IMediator>();
         await mediator.Send(new CloneContentCmd());
-
-        //TODO: parse loaded files
-        //TODO: use IHostService for that!
-        //var fileParser = app.Services.GetService<IFileParserService>();
-        //fileParser.ParseExistingFiles();
     }
 
     public Task StopAsync(CancellationToken cancellationToken)

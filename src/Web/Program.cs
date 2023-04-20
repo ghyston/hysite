@@ -19,7 +19,7 @@ builder.Logging.AddFile(logsFullPath + "/hysite-{Date}.log");
 // Configure services
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
-builder.Services.AddWebPresentation();
+builder.Services.AddWebPresentation(builder.Environment);
 
 var app = builder.Build();
 

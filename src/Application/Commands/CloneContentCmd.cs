@@ -75,6 +75,7 @@ public class CloneContentHandler : IRequestHandler<CloneContentCmd>
             return Unit.Value;
         }
 
+        // TODO: do upsert, not a complete overwrite
         _dbContext.BlogPosts.RemoveRange(_dbContext.BlogPosts);
         _dbContext.BlogPosts.AddRange(posts);
 

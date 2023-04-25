@@ -45,4 +45,4 @@ run_docker_localy.sh
 out/
 
 #local files
-appsettings.Development.json
+**/appsettings.Development.json

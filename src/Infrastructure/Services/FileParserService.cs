@@ -1,5 +1,6 @@
 using System.Globalization;
 using HySite.Application.Interfaces;
+using HySite.Domain.Common;
 using HySite.Domain.Model;
 using Markdig;
 using Microsoft.Extensions.FileProviders;
@@ -58,14 +59,14 @@ public class FileParserService : IFileParserService
             var fileName = fileInfo.Name;
             using var reader = new StreamReader(fileInfo.CreateReadStream());
 
-            try
-            {
-                posts.Add(ParseFile(fileName, reader));
-            }
-            catch (FileParserServiceException ex)
+            var parseReult = ParseFile(fileName, reader);
+            if(!parseReult.IsSuccessful)
             {
                 _logger.LogWarning($"FileParserService.ParseExistingFiles Failed to parse file '{fileName}'. Error: {ex.Message}");
+                continue;
             }
+
+            posts.Add(parseReult.Value);
         }
 
         var diff = (DateTime.Now - start).ToString();
@@ -74,18 +75,14 @@ public class FileParserService : IFileParserService
         return posts;
     }
 
-    public BlogPost ParseFile(string fileName, StreamReader streamReader)
+    public Result<BlogPost> ParseFile(string fileName, StreamReader streamReader)
     {
         if (fileName.Contains(' '))
-        {
-            throw new FileParserServiceException($"Filename should not contain spaces");
-        }
+            return Result<BlogPost>.Error($"Filename should not contain spaces");
 
         var title = streamReader.ReadLine()?.Trim();
         if (title is null)
-        {
-            throw new FileParserServiceException($"File is empty");
-        }
+            return Result<BlogPost>.Error($"File is empty");
 
         var timeStr = streamReader.ReadLine()?.Trim() ?? string.Empty;
         var dateFormat = "yyyy/MM/dd HH:mm";
@@ -97,16 +94,14 @@ public class FileParserService : IFileParserService
         }
         catch (FormatException)
         {
-            throw new FileParserServiceException($"'{timeStr}' is not in the correct date format '{dateFormat}'");
+            return Result<BlogPost>.Error($"'{timeStr}' is not in the correct date format '{dateFormat}'");
         }
 
         var unusedMetaDataLine = streamReader.ReadLine()?.Trim();
         while (unusedMetaDataLine != "@@@")
         {
             if (streamReader.EndOfStream)
-            {
-                throw new FileParserServiceException("Metadata marker not found");
-            }
+                return Result<BlogPost>.Error("Metadata marker not found");
 
             unusedMetaDataLine = streamReader.ReadLine()?.Trim();
         }
@@ -120,14 +115,15 @@ public class FileParserService : IFileParserService
         var mdContent = streamReader.ReadToEnd();
         var htmlContent = Markdown.ToHtml(mdContent, pipeline);
 
-        return new BlogPost()
-        {
-            FileName = Path.GetFileNameWithoutExtension(fileName).ToLower(),
-            Title = title,
-            MdContent = mdContent,
-            HtmlContent = htmlContent,
-            Created = postCreated
-        };
+        return Result<BlogPost>.Success(
+            new BlogPost()
+            {
+                FileName = Path.GetFileNameWithoutExtension(fileName).ToLower(),
+                Title = title,
+                MdContent = mdContent,
+                HtmlContent = htmlContent,
+                Created = postCreated
+            });
     }
 }
 

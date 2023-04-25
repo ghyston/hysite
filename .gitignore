@@ -40,7 +40,7 @@ run_docker_localy.sh
 #temp posts
 **/posts/
 **/log/
-**/*.md
+**/posts/*.md
 *.log
 out/
 

@@ -8,7 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace Hysite.Web.Services;
+namespace HySite.Web.Services;
 
 public class StartupService : IHostedService
 {

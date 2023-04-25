@@ -4,6 +4,8 @@ using FluentValidation;
 using HySite.Application.Dto;
 using MediatR;
 using HySite.Application.Command;
+using HySite.Application.Interfaces;
+using HySite.Application.Repositories;
 
 namespace HySite.Application;
 
@@ -14,5 +16,6 @@ public static class DependencyInjection
         services.AddMediatR(typeof(CloneContentCmd));
         services.AddMediatR(Assembly.GetExecutingAssembly());
         services.AddValidatorsFromAssemblyContaining<GitSettingsDtoValidator>();
+        services.AddScoped<IBlogPostRepository, BlogPostRepository>();
     }
 }

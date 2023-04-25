@@ -59,14 +59,14 @@ public class FileParserService : IFileParserService
             var fileName = fileInfo.Name;
             using var reader = new StreamReader(fileInfo.CreateReadStream());
 
-            var parseReult = ParseFile(fileName, reader);
-            if(!parseReult.IsSuccessful)
+            var parseResult = ParseFile(fileName, reader);
+            if(!parseResult.IsSuccessful)
             {
-                _logger.LogWarning($"FileParserService.ParseExistingFiles Failed to parse file '{fileName}'. Error: {ex.Message}");
+                _logger.LogWarning($"FileParserService.ParseExistingFiles Failed to parse file '{fileName}'. Error: {parseResult.Message}");
                 continue;
             }
 
-            posts.Add(parseReult.Value);
+            posts.Add(parseResult.Value);
         }
 
         var diff = (DateTime.Now - start).ToString();

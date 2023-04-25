@@ -4,6 +4,7 @@ namespace HySite.Domain.Model;
 
 public class BlogPost
 {
+    // TODO: remove redundant attributes
     public int Id { get; set; }
 
     [Required, StringLength(100)]

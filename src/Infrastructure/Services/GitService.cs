@@ -18,9 +18,6 @@ public class GitService : IGitService
         _logger = logger;
     }
 
-    // TODO: where is it used?
-    private const string Sha1Prefix = "sha1=";
-
     public void Clone(GitSettingsDto settings)
     {
         _logger.LogInformation("Cloning repository..");

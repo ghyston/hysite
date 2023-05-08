@@ -60,4 +60,4 @@ jobs:
           host: ${{ secrets.LINODE_HOST }}
           username: ${{ secrets.LINODE_USERNAME }}
           password: ${{ secrets.LINODE_PASSWORD }}
-          script: docker-compose pull; docker compose up -d
+          script: docker compose pull; docker compose up -d

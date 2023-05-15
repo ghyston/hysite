@@ -32,7 +32,7 @@ public class BlogPostRepository : IBlogPostRepository
             .Skip(pageNumber * postPerPage)
             .Take(postPerPage).ToList();
 
-    public IEnumerable<BlogPost> RetrieveAll() =>
+    public IQueryable<BlogPost> RetrieveAll() =>
             _dbContext
             .BlogPosts
             .OrderByDescending(p => p.Created);

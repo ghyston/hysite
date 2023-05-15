@@ -24,14 +24,16 @@ public class UpdatePostsCommandHandler : IRequestHandler<UpdatePostsCommand>
     private readonly IConfiguration _configuration;
     private readonly IFileParserService _fileParserService;
     private readonly ILogger<UpdatePostsCommandHandler> _logger;
+    private readonly IRssFeedService _rssFeedService;
     private readonly IHysiteContext _dbContext;
 
-    public UpdatePostsCommandHandler(IGitService gitService, IConfiguration configuration, IFileParserService fileParserService, ILogger<UpdatePostsCommandHandler> logger, IHysiteContext dbContext)
+    public UpdatePostsCommandHandler(IGitService gitService, IConfiguration configuration, IFileParserService fileParserService, ILogger<UpdatePostsCommandHandler> logger, IRssFeedService rssFeedService, IHysiteContext dbContext)
     {
         _gitService = gitService;
         _configuration = configuration;
         _fileParserService = fileParserService;
         _logger = logger;
+        _rssFeedService = rssFeedService;
         _dbContext = dbContext;
     }
 
@@ -73,7 +75,7 @@ public class UpdatePostsCommandHandler : IRequestHandler<UpdatePostsCommand>
         if(!posts.Any())
         {
             _logger.LogError($"No posts have been loaded");
-            return Unit.Value;
+            return Unit.Value; //TODO: rss should be updated then anyway!
         }
 
         // TODO: do upsert, not a complete overwrite
@@ -82,7 +84,7 @@ public class UpdatePostsCommandHandler : IRequestHandler<UpdatePostsCommand>
 
         await _dbContext.SaveChangesAsync(cancellationToken);
 
-        //await _rssFeedService.CreateRssFeed(rssPath, cancellationToken); //TODO
+        _rssFeedService.CreateRssFeed(posts, rssPath);
 
         return Unit.Value;
     }

@@ -21,6 +21,7 @@ public static class DependencyInjection
         services.AddSingleton<IVersionService, VersionService>();
         services.AddScoped<IGitService, GitService>();
         services.AddScoped<IFileParserService, FileParserService>();
+        services.AddScoped<IRssFeedService, RssFeedService>();
     }
 
     public static void MigrateDatabase(this IServiceScope scope)

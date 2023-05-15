@@ -20,6 +20,7 @@ public class CloneContentHandler : IRequestHandler<CloneContentCmd>
     private readonly IValidator<GitSettingsDto> _settingsValidator;
     private readonly IFileParserService _fileParserService;
     private readonly IHysiteContext _dbContext;
+    private readonly IRssFeedService _rssFeedService;
     private readonly ILogger<CloneContentHandler> _logger;
 
     public CloneContentHandler(IGitService service,
@@ -27,6 +28,7 @@ public class CloneContentHandler : IRequestHandler<CloneContentCmd>
         IValidator<GitSettingsDto> settingsValidator,
         IFileParserService fileParserService,
         IHysiteContext hysiteContext,
+        IRssFeedService rssFeedService,
         ILogger<CloneContentHandler> logger)
     {
         _gitService = service;
@@ -34,6 +36,7 @@ public class CloneContentHandler : IRequestHandler<CloneContentCmd>
         _settingsValidator = settingsValidator;
         _fileParserService = fileParserService;
         _dbContext = hysiteContext;
+        _rssFeedService = rssFeedService;
         _logger = logger;
     }
 
@@ -80,6 +83,11 @@ public class CloneContentHandler : IRequestHandler<CloneContentCmd>
         _dbContext.BlogPosts.AddRange(posts);
 
         await _dbContext.SaveChangesAsync(cancellationToken);
+
+        var rssFileName = _configuration["RssFeedFile"];
+        var rssPath = String.Join('/', postsPath, rssFileName);
+
+        _rssFeedService.CreateRssFeed(posts, rssPath);
 
         return Unit.Value;
     }

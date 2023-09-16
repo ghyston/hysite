@@ -15,7 +15,7 @@ services:
       - /etc/letsencrypt/prod/hyston.blog:/app/cert
       - /root/logs:/app/logs
   db:
-    image: postgres
+    image: postgres:15.4
     container_name: hysite_db
     environment:
       - POSTGRES_USER=postgress

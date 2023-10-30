@@ -1,8 +1,7 @@
 # hysite
 Blog engine on .net
 
-
-![Built & deployed](https://github.com/ghyston/hysite/workflows/Build%20docker%20image,%20push%20to%20dockerhub,%20deploy%20on%20linode/badge.svg)
+[![Build docker image, push to dockerhub, deploy on linode](https://github.com/ghyston/hysite/actions/workflows/deploy_to_linode.yml/badge.svg)](https://github.com/ghyston/hysite/actions/workflows/deploy_to_linode.yml)
 -----
 
 This is a small hobby project for learning .net development and deployment. Actual blog contains some posts, but they are not so interesting, as git log for this repository.

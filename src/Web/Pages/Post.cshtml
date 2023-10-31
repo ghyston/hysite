@@ -2,7 +2,7 @@
 
 @model PostPageModel
 
-@Html.Partial("BlogEntry", @Model.BlogPost)
+<partial name="BlogEntry" model=@Model.BlogPost />
 
 @if(!string.IsNullOrEmpty(@Model.NextPostFileName) )
 {

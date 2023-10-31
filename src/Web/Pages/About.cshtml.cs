@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using HySite.Application.Interfaces;
-using HySite.Domain.Model;
 
 namespace HySite.Web.Pages;
 

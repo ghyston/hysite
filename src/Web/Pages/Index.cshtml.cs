@@ -13,7 +13,7 @@ namespace HySite.Web.Pages;
 
 public class IndexModel : PageModel
 {
-    public List<BlogPost> Posts { get; private set; } = new List<BlogPost>();
+    public List<BlogPost> Posts { get; private set; } = new ();
     public int PageNum { get; set; }
     public int? NextPage { get; set; }
     public int? PrevPage { get; set; } //@todo: make it string? to hide "/0" at first page
@@ -31,7 +31,7 @@ public class IndexModel : PageModel
         _blogPostRepository = blogPostRepository;
         _versionService = versionService;
         
-        POSTS_PER_PAGE = Int32.Parse(_configuration["PostsPerPage"]);
+        POSTS_PER_PAGE = int.Parse(_configuration["PostsPerPage"]);
     }
 
     public async Task<IActionResult> OnGet(int pageNumber, CancellationToken cancellationToken)
@@ -49,10 +49,10 @@ public class IndexModel : PageModel
             return RedirectToPage("/LostAndNotFound");
         }
 
-        this.PageNum = pageNumber;
-        this.PrevPage = pageNumber >= pagesCount ? (int?)null : (pageNumber + 1);
-        this.NextPage = pageNumber == 0 ? (int?)null : (pageNumber - 1);
-        this.Posts = _blogPostRepository
+        PageNum = pageNumber;
+        PrevPage = pageNumber >= pagesCount ? null : (pageNumber + 1);
+        NextPage = pageNumber == 0 ? null : (pageNumber - 1);
+        Posts = _blogPostRepository
             .FindPostsByPage(this.PageNum, POSTS_PER_PAGE)
             .ToList();
 
@@ -61,7 +61,7 @@ public class IndexModel : PageModel
         //(handler as IncrementViewsHandler)?
         //.Handle(new IncrementViewsHandlerRequest());
 
-        this.Version = _versionService.GetCurrentGitSHA();
+        Version = _versionService.GetCurrentGitSHA();
 
         return Page();
     }

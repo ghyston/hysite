@@ -9,7 +9,7 @@ namespace HySite.Application.Repositories;
 
 public class BlogPostRepository : IBlogPostRepository
 {
-    private IHysiteContext _dbContext;
+    private readonly IHysiteContext _dbContext;
 
     public BlogPostRepository(IHysiteContext db)
     {

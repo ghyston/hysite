@@ -29,15 +29,17 @@ public class GitService : IGitService
 
         try
         {
-            var co = new CloneOptions();
-            co.CredentialsProvider = Credentials(settings);
-            co.Checkout = true;
-            co.BranchName = "publish";
+            var co = new CloneOptions
+            {
+                CredentialsProvider = Credentials(settings),
+                Checkout = true,
+                BranchName = "publish"
+            };
             Repository.Clone(settings.GitUrl, settings.LocalPath, co);
         }
         catch (System.Exception exception)
         {
-            _logger.LogError(exception, $"Error on cloning `{settings.GitUrl}`");
+            _logger.LogError(exception, "Error on cloning `{GitUrl}`", settings.GitUrl);
             return;
         }
 
@@ -51,8 +53,10 @@ public class GitService : IGitService
         try
         {
             using var repo = new Repository(settings.LocalPath);
-            LibGit2Sharp.PullOptions options = new();
-            options.FetchOptions = new FetchOptions();
+            LibGit2Sharp.PullOptions options = new()
+            {
+                FetchOptions = new FetchOptions()
+            };
             options.FetchOptions.CredentialsProvider = Credentials(settings);
 
             var signature = new LibGit2Sharp.Signature(new Identity(settings.GitUser, settings.GitUser), DateTime.Now);
@@ -60,7 +64,7 @@ public class GitService : IGitService
         }
         catch (System.Exception exception)
         {
-            _logger.LogError(exception, $"Error on pull updates `{settings.GitUrl}`");
+            _logger.LogError(exception, "Error on pull updates `{GitUrl}`", settings.GitUrl);
             return;
         }
 
@@ -108,7 +112,7 @@ public class GitService : IGitService
         
     }
 
-    private LibGit2Sharp.Handlers.CredentialsHandler Credentials(GitSettingsDto settings) =>
+    private static LibGit2Sharp.Handlers.CredentialsHandler Credentials(GitSettingsDto settings) =>
         (_url, _user, _cred) =>
             new UsernamePasswordCredentials
             {

@@ -19,8 +19,6 @@ public class ArchivePageModel : PageModel
         _blogPostRepository = blogPostRepository;
     }
 
-    
-
     public async Task<IActionResult> OnGetAsync(CancellationToken cancellationToken) 
     {
         Years = await _blogPostRepository.GetAllYears(cancellationToken);

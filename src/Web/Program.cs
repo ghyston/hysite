@@ -24,11 +24,10 @@ builder.Services.AddWebPresentation(builder.Environment);
 var app = builder.Build();
 
 var versionService = app.Services.GetService<IVersionService>();
-var config = app.Services.GetService<IConfiguration>();
 
 using var scope = app.Services.CreateScope();
 
-app.Logger.LogInformation($"Application builded in {app.Environment.EnvironmentName} environment from commit {versionService.GetCurrentGitSHA()}! 🛠️");
+app.Logger.LogInformation("Application builded in {EnvironmentName} environment from commit {GitSHA}! 🛠️", app.Environment.EnvironmentName, versionService.GetCurrentGitSHA());
 
 scope.MigrateDatabase();
 
@@ -51,7 +50,7 @@ void CheckCertificateDirectories(IConfiguration config, ILogger logger)
     var certPath = config["CertPath"] ?? string.Empty;
 
     if (!File.Exists(fullchainPath))
-        logger.LogWarning($"Certificate file ({fullchainPath}) does NOT exist!");
+        logger.LogWarning("Certificate file ({fullchainPath}) does NOT exist!", fullchainPath);
 
     if (Directory.Exists(certPath))
     {
@@ -61,9 +60,9 @@ void CheckCertificateDirectories(IConfiguration config, ILogger logger)
             logger.LogInformation(file);
     }
 
-    logger.LogInformation($"Cert path: {certPath}");
-    logger.LogInformation($"Kestrel path: {fullchainPath}");
-    logger.LogInformation($"Kestrel keypath: {privkeyPath}");
+    logger.LogInformation("Cert path: {certPath}", certPath);
+    logger.LogInformation("Kestrel path: {fullchainPath}", fullchainPath);
+    logger.LogInformation("Kestrel keypath: {privkeyPath}", privkeyPath);
 }
 
 string EnsureDirectoryExist(params string[] subPaths)

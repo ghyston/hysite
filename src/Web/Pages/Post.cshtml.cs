@@ -9,7 +9,6 @@ namespace HySite.Web.Pages;
 public class PostPageModel : PageModel
 {
     private readonly IBlogPostRepository _blogPostRepository;
-    private readonly IServiceProvider _serviceProvider;
 
     [BindProperty]
     public BlogPost BlogPost { get; set; }
@@ -20,10 +19,9 @@ public class PostPageModel : PageModel
     [BindProperty]
     public string PrevPostFileName { get; set; }
 
-    public PostPageModel(IBlogPostRepository blogPostRepository, IServiceProvider serviceProvider)
+    public PostPageModel(IBlogPostRepository blogPostRepository)
     {
         _blogPostRepository = blogPostRepository;
-        _serviceProvider = serviceProvider;
     }
 
     public IActionResult OnGet(string postName)

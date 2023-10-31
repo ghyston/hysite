@@ -1,0 +1,17 @@
+@page "{year:int:min(2000):max(2100)}"
+
+
+@model HySite.Web.Pages.YearPageModel
+
+<h3>Back to the <b>@Model.Year</b>:</h3>
+
+<table>
+@foreach (var item in @Model.Posts)
+{
+    <tr>
+        <td>@item.Created.ToString("MMM dd")</td>
+        <td>&nbsp;</td>
+        <td><a href=~/@item.FileName>@item.Title</a></td>
+    </tr>
+}
+</ul>

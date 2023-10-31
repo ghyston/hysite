@@ -1,0 +1,14 @@
+@page
+
+@model HySite.Web.Pages.ArchivePageModel;
+
+<h6>I wrote <b>@Model.PostsCount</b> posts in <b>@Model.Years.Count()</b> years.</h6>
+
+<ul>
+@foreach (var year in @Model.Years)
+{
+    <li>
+        <a href=~/Year/@year>@year</a>
+    </li>
+}
+</ul>

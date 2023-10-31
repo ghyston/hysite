@@ -53,6 +53,15 @@ public class BlogPostRepository : IBlogPostRepository
             .BlogPosts
             .OrderByDescending(p => p.Created);
 
+    public IEnumerable<int> GetAllYears() => 
+        _dbContext
+            .BlogPosts
+            .Where(bp => bp.Created != DateTime.MinValue)
+            .Select(bp => bp.Created.Year)
+            .Distinct()
+            .OrderBy(x => x)
+            .ToList();
+
     public int PostsCount() => _dbContext.BlogPosts.Count();
 
     public void Remove(BlogPost post) => _dbContext.BlogPosts.Remove(post);

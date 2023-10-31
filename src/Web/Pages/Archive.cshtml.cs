@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using HySite.Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -17,9 +19,11 @@ public class ArchivePageModel : PageModel
         _blogPostRepository = blogPostRepository;
     }
 
-    public IActionResult OnGet() 
+    
+
+    public async Task<IActionResult> OnGetAsync(CancellationToken cancellationToken) 
     {
-        Years = _blogPostRepository.GetAllYears();
+        Years = await _blogPostRepository.GetAllYears(cancellationToken);
         PostsCount = _blogPostRepository.PostsCount();
 
         return Page();

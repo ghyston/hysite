@@ -10,9 +10,9 @@ public interface IBlogPostRepository
     void Add(IEnumerable<BlogPost> posts);
     BlogPost? FindPostByFileName(string fileName);
     IEnumerable<BlogPost> FindPostsByPage(int pageNumber, int postPerPage);
-    bool AnyPostsAtYear(int year);
-    IEnumerable<BlogPost> FindPostsByYear(int year);
-    IEnumerable<int> GetAllYears();
+    Task<bool> AnyPostsAtYear(int year, CancellationToken cancellationToken);
+    Task<List<BlogPost>> FindPostsByYear(int year, CancellationToken cancellationToken);
+    Task<IEnumerable<int>> GetAllYears(CancellationToken cancellationToken);
     IQueryable<BlogPost> RetrieveAll();
     int PostsCount();
     void Remove(BlogPost post);

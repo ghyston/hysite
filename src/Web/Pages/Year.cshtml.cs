@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using HySite.Application.Interfaces;
 using HySite.Domain.Model;
 using Microsoft.AspNetCore.Mvc;
@@ -17,10 +19,10 @@ public class YearPageModel : PageModel
     public YearPageModel(IBlogPostRepository blogPostRepository) => 
         _blogPostRepository = blogPostRepository;
 
-    public IActionResult OnGet(int year)
+    public async Task<IActionResult> OnGetAsync(int year, CancellationToken cancellationToken)
     {
         Year = year;
-        Posts = _blogPostRepository.FindPostsByYear(year).ToList();
+        Posts = await _blogPostRepository.FindPostsByYear(year, cancellationToken);
 
         return Page();
     }

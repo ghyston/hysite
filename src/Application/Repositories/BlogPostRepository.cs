@@ -40,27 +40,27 @@ public class BlogPostRepository : IBlogPostRepository
                 bp.Created != DateTime.MinValue && 
                 bp.Created.Year == year);
 
-    public IEnumerable<BlogPost> FindPostsByYear(int year) =>
-        PostsByYear(year)
+    public async Task<List<BlogPost>> FindPostsByYear(int year, CancellationToken cancellationToken) =>
+        await PostsByYear(year)
             .OrderBy(bp => bp.Created)
-            .ToList();
+            .ToListAsync(cancellationToken);
 
-    public bool AnyPostsAtYear(int year) => 
-        PostsByYear(year).Any();
+    public async Task<bool> AnyPostsAtYear(int year, CancellationToken cancellationToken) => 
+        await PostsByYear(year).AnyAsync(cancellationToken);
 
     public IQueryable<BlogPost> RetrieveAll() =>
             _dbContext
             .BlogPosts
             .OrderByDescending(p => p.Created);
 
-    public IEnumerable<int> GetAllYears() => 
-        _dbContext
+    public async Task<IEnumerable<int>> GetAllYears(CancellationToken cancellationToken) => 
+        await _dbContext
             .BlogPosts
             .Where(bp => bp.Created != DateTime.MinValue)
             .Select(bp => bp.Created.Year)
             .Distinct()
             .OrderBy(x => x)
-            .ToList();
+            .ToListAsync(cancellationToken);
 
     public int PostsCount() => _dbContext.BlogPosts.Count();
 

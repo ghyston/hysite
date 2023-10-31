@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using HySite.Application.Interfaces;
 using HySite.Domain.Model;
 using Microsoft.AspNetCore.Mvc;
@@ -32,9 +34,9 @@ public class IndexModel : PageModel
         POSTS_PER_PAGE = Int32.Parse(_configuration["PostsPerPage"]);
     }
 
-    public IActionResult OnGet(int pageNumber)
+    public async Task<IActionResult> OnGet(int pageNumber, CancellationToken cancellationToken)
     {
-        var posts = _blogPostRepository.FindPostsByYear(year: pageNumber);
+        var posts = await _blogPostRepository.FindPostsByYear(year: pageNumber, cancellationToken);
         if(posts.Any())
             return RedirectToPage("./Year", new { Year = pageNumber});
 

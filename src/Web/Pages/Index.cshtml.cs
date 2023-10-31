@@ -34,6 +34,10 @@ public class IndexModel : PageModel
 
     public IActionResult OnGet(int pageNumber)
     {
+        var posts = _blogPostRepository.FindPostsByYear(year: pageNumber);
+        if(posts.Any())
+            return RedirectToPage("./Year", new { Year = pageNumber});
+
         int postsCount = _blogPostRepository.PostsCount();
         var pagesCount = postsCount / POSTS_PER_PAGE
             - (postsCount % POSTS_PER_PAGE == 0 ? 1 : 0);

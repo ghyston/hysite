@@ -3,6 +3,7 @@ using System.Linq;
 using System;
 using HySite.Application.Interfaces;
 using HySite.Domain.Model;
+using Microsoft.EntityFrameworkCore;
 
 namespace HySite.Application.Repositories;
 
@@ -32,10 +33,34 @@ public class BlogPostRepository : IBlogPostRepository
             .Skip(pageNumber * postPerPage)
             .Take(postPerPage).ToList();
 
+    private IQueryable<BlogPost> PostsByYear(int year) => 
+        _dbContext
+            .BlogPosts
+            .Where(bp => 
+                bp.Created != DateTime.MinValue && 
+                bp.Created.Year == year);
+
+    public IEnumerable<BlogPost> FindPostsByYear(int year) =>
+        PostsByYear(year)
+            .OrderBy(bp => bp.Created)
+            .ToList();
+
+    public bool AnyPostsAtYear(int year) => 
+        PostsByYear(year).Any();
+
     public IQueryable<BlogPost> RetrieveAll() =>
             _dbContext
             .BlogPosts
             .OrderByDescending(p => p.Created);
+
+    public IEnumerable<int> GetAllYears() => 
+        _dbContext
+            .BlogPosts
+            .Where(bp => bp.Created != DateTime.MinValue)
+            .Select(bp => bp.Created.Year)
+            .Distinct()
+            .OrderBy(x => x)
+            .ToList();
 
     public int PostsCount() => _dbContext.BlogPosts.Count();
 

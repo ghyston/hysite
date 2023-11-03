@@ -3,6 +3,7 @@ using HySite.Application.Interfaces;
 using HySite.Domain.Common;
 using HySite.Domain.Model;
 using Markdig;
+using Markdown.ColorCode;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Logging;
 
@@ -19,7 +20,7 @@ public class FileParserServiceException : Exception
 
 public class FileParserService : IFileParserService
 {
-    private IFileProvider _fileProvider;
+    private readonly IFileProvider _fileProvider;
 
     private readonly ILogger<FileParserService> _logger;
 
@@ -70,7 +71,7 @@ public class FileParserService : IFileParserService
         }
 
         var diff = (DateTime.Now - start).ToString();
-        var count = posts.Count();
+        var count = posts.Count;
         _logger.LogInformation($"Parsing {count} posts, took {diff} time");
         return posts;
     }
@@ -108,12 +109,12 @@ public class FileParserService : IFileParserService
 
         var pipeline = new MarkdownPipelineBuilder()
             .UseAdvancedExtensions()
-            //.UseSyntaxHighlighting() //TODO: markdig syntax highlight is very outdated
+            .UseColorCode()
             .UseFootnotes()
             .Build();
 
         var mdContent = streamReader.ReadToEnd();
-        var htmlContent = Markdown.ToHtml(mdContent, pipeline);
+        var htmlContent = Markdig.Markdown.ToHtml(mdContent, pipeline);
 
         return Result<BlogPost>.Success(
             new BlogPost()

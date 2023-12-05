@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /app
 
 COPY src ./src
@@ -7,7 +7,7 @@ COPY hysite.sln ./hysite.sln
 RUN dotnet restore
 RUN dotnet publish -c Release -o out
 
-FROM mcr.microsoft.com/dotnet/aspnet:7.0
+FROM mcr.microsoft.com/dotnet/aspnet:8.0
 
 ARG HYSITE_VERSION="latest"
 ENV HYSITE_VERSION=$HYSITE_VERSION

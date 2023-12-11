@@ -1,6 +1,6 @@
 @model Domain.Model.BlogPost
 
-<h3><a href="@Html.Raw(Model.FileName)">@Html.Raw(Model.Title)</a></h3>
-<p style="font-size: 12px; color: gray;">@Html.Raw(@Model.Created.ToString("yyyy-MM-dd HH:mm"))</p>
+<h2><a href="@Html.Raw(Model.FileName)">@Html.Raw(Model.Title)</a></h2>
+<p class="entryDate">@Html.Raw(@Model.Created.ToString("MMMM d, yyyy"))</p>
 @Html.Raw(@Model.HtmlContent)
 <hr />

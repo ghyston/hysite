@@ -1,63 +1,83 @@
-body {    
-    margin: 1rem auto 1rem;
-  }
+@font-face {
+  font-family: 'Geist';
+  src: url('/fonts/GeistVF.ttf');
+  src: url('/fonts/GeistMono-Regular.otf');
+}
 
-  hr {
-      width: 85%;
-  }
+body {
+  margin: 1rem auto 1rem;
+  font-family: 'Geist', fallback, sans-serif;
+  font-size: 1rem;
+  font-weight: 100;
+  line-height: 1.65;
+  color: lightgrey;
+  min-width: 20rem;
+}
 
-  a,
-  a:visited {
-    text-decoration: none;
-  }
+pre, code {
+  padding: 5pt;
+  border-radius: 3pt;
+  font-size: 12pt;
+  font-family: 'Geist', monospace;
+}
 
-  .blogTitle {
-    font-family: monospace !important;
-    font-size: 30px !important;
-    color: lightgrey !important;
-    text-decoration:none !important;
-  }
+hr {
+  width: 85%;
+}
 
-  .blogTitleItem {
-    font-family: monospace !important;
-    font-size: 15px !important; 
-    color: darkcyan !important; 
-    text-decoration:none !important;
-  }
-  
-  .navigation {
-    font-family: monospace !important;
-    font-size: 20px !important; 
-    color: darkcyan !important; 
-    text-decoration:none !important;
-  }
+a,
+a:visited {
+  text-decoration: none;
+}
 
-  .copyright {
-    color: grey;
-    text-align: center;
-  }
+.blogTitle {
+  font-size: 1.6rem !important;
+  color: lightgrey !important;
+  text-decoration: none !important;
+}
 
-  .jsfree {
-    display: inline-block;
-    padding-left: 30px;
-    font-size: 12pt;
-    color: lightblue;
-  }
+.blogTitleItem {
+  font-size: 1rem !important;
+  color: darkcyan !important;
+  text-decoration: none !important;
+}
 
-  pre {    
-    overflow-x: auto;
-  }
+.entryDate {
+  color: gray;
+}
 
-  p {
-    text-indent: 20px;
-  }
+.navigation {
+  font-size: 1rem !important;
+  color: darkcyan !important;
+  text-decoration: none !important;
+}
 
-  .blogTitleItem:hover {
-    text-decoration: underline !important;
-    color: whitesmoke !important;
-  }
+.copyright {
+  color: grey;
+  text-align: left;
+}
 
-  .navigation:hover {
-    color: rgb(13, 151, 151) !important; 
-    text-decoration:underline !important;
-  }
+.jsfree {
+  display: inline-block;
+  padding-left: 30px;
+  font-size: 0.8rem;
+  color: lightblue;
+}
+
+pre {
+  overflow-x: auto;
+}
+
+p {
+  text-indent: 20px;
+}
+
+.blogTitleItem:hover {
+  text-decoration: underline !important;
+  color: whitesmoke !important;
+}
+
+.navigation:hover {
+  color: rgb(13, 151, 151) !important;
+  text-decoration: underline !important;
+}

@@ -4,6 +4,8 @@
   src: url('/fonts/GeistMono-Regular.otf');
 }
 
+
+
 body {
   margin: 1rem auto 1rem;
   font-family: 'Geist', fallback, sans-serif;
@@ -14,7 +16,8 @@ body {
   min-width: 20rem;
 }
 
-pre, code {
+pre,
+code {
   padding: 5pt;
   border-radius: 3pt;
   font-size: 12pt;
@@ -80,4 +83,35 @@ p {
 .navigation:hover {
   color: rgb(13, 151, 151) !important;
   text-decoration: underline !important;
+}
+
+@media (prefers-color-scheme: light) {
+
+  a.blogTitle {
+    color: black !important;
+  }
+
+  html,
+  body {
+    background-color: white;
+    color: black
+  }
+  
+  .blogTitleItem:hover {
+    color: black !important;
+  }
+  
+  a,
+  a:visited {
+    color: darkorange !important
+  }
+
+  .navigation:hover {
+    color: black !important;
+  }
+
+  pre,
+  code {
+    background-color: lightgray;
+  }
 }

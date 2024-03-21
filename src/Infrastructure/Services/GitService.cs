@@ -2,11 +2,11 @@ using System.Security.Cryptography;
 using System.Text;
 using FluentValidation;
 using HySite.Application.Dto;
+using HySite.Application.Extensions;
 using HySite.Application.Interfaces;
 using LibGit2Sharp;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using HySite.Application.Extensions;
 
 namespace HySite.Infrastructure.Services;
 
@@ -31,10 +31,10 @@ public class GitService : IGitService
         {
             var co = new CloneOptions
             {
-                CredentialsProvider = Credentials(settings),
                 Checkout = true,
                 BranchName = "publish"
             };
+            co.FetchOptions.CredentialsProvider = Credentials(settings);
             Repository.Clone(settings.GitUrl, settings.LocalPath, co);
         }
         catch (System.Exception exception)
@@ -99,17 +99,17 @@ public class GitService : IGitService
             _logger.LogError($"GitRepository.IsSecretValid signature doesn't start with sha1 prefix");
             return false;
         }
-        
+
         var signature = signatureWithPrefix.Substring(Sha1Prefix.Length);
         var secret = Encoding.ASCII.GetBytes(token);
         var payloadBytes = Encoding.ASCII.GetBytes(payload);
 
         using var hmacsha1 = new HMACSHA1(secret);
-        
+
         var hash = hmacsha1.ComputeHash(payloadBytes);
         var hashString = hash.ConvertToString();
         return (hashString.Equals(signature));
-        
+
     }
 
     private static LibGit2Sharp.Handlers.CredentialsHandler Credentials(GitSettingsDto settings) =>

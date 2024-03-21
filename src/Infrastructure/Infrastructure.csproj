@@ -6,7 +6,7 @@
 
   <ItemGroup>
     <PackageReference Include="EFCore.NamingConventions" Version="8.0.0-rc.2" />
-    <PackageReference Include="LibGit2Sharp" Version="0.27.0-preview-0182" />
+    <PackageReference Include="LibGit2Sharp" Version="0.30.0" />
     <PackageReference Include="Markdig" Version="0.33.0" />
     <PackageReference Include="Markdown.ColorCode" Version="2.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.0" />

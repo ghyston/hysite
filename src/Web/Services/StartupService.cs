@@ -42,11 +42,9 @@ public class StartupService : IHostedService
 
         using var scope = _serviceScopeFactory.CreateScope();
         var mediator = scope.ServiceProvider.GetService<IMediator>();
-        await mediator.Send(new CloneContentCmd());
+        await mediator.Send(new CloneContentCmd(), cancellationToken);
     }
 
-    public Task StopAsync(CancellationToken cancellationToken)
-    {
-        throw new System.NotImplementedException();
-    }
+    public Task StopAsync(CancellationToken cancellationToken) =>
+        Task.CompletedTask;
 }

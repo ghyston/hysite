@@ -19,6 +19,8 @@ public class BlogPost
     [Required]
     public required string HtmlContent { get; set; }
 
+    public ICollection<BlogTag> Tags { get; set; } = [];
+
     [Required]
     public DateTime Created {get; set;}
 

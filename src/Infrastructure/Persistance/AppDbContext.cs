@@ -11,6 +11,10 @@ public class AppDbContext : DbContext, IHysiteContext
 
     }
 
+    protected override void OnModelCreating(ModelBuilder modelBuilder) =>
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(BlogTagConfiguration).Assembly);
+
     public DbSet<BlogPost> BlogPosts => Set<BlogPost>();
+    public DbSet<BlogTag> BlogTags => Set<BlogTag>();
     public DbSet<ViewStatistic> ViewStatistics => Set<ViewStatistic>();
 }

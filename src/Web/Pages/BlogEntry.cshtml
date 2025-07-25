@@ -3,4 +3,5 @@
 <h2><a href="@Html.Raw(Model.FileName)">@Html.Raw(Model.Title)</a></h2>
 <p class="entryDate">@Html.Raw(@Model.Created.ToString("MMMM d, yyyy"))</p>
 @Html.Raw(@Model.HtmlContent)
+<p class="tags">tags: @string.Join(", ", @Model.Tags.Select(t => t.Name))</p>
 <hr />

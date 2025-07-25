@@ -4,6 +4,7 @@ using System;
 using HySite.Application.Interfaces;
 using HySite.Domain.Model;
 using Microsoft.EntityFrameworkCore;
+using HySite.Domain.Dtos;
 
 namespace HySite.Application.Repositories;
 
@@ -20,22 +21,59 @@ public class BlogPostRepository : IBlogPostRepository
 
     public void Add(IEnumerable<BlogPost> posts) => _dbContext.BlogPosts.AddRange(posts);
 
-    public BlogPost? FindPostByFileName(string fileName) => 
+    //TODO: tests!
+    public async Task<IEnumerable<BlogPost>> CreatePosts(IEnumerable<BlogPostDto> dtos, CancellationToken cancellationToken)
+    {
+        var allTags = await _dbContext.BlogTags.ToListAsync(cancellationToken);
+
+        BlogTag GetOrCreateTag(string tag)
+        {
+            var trimTag = tag.Trim();
+            var blogTag = allTags.FirstOrDefault(t => t.Name == trimTag);
+            if (blogTag != null)
+                return blogTag;
+
+            blogTag = new BlogTag
+            {
+                Name = trimTag
+            };
+            allTags.Add(blogTag);
+            _dbContext.BlogTags.Add(blogTag);
+            return blogTag;
+        }
+
+        return dtos
+            .Select(p => new BlogPost
+            {
+                FileName = p.FileName,
+                Title = p.Title,
+                MdContent = p.Content,
+                HtmlContent = string.Empty,
+                Created = p.Created,
+                Tags = p.Tags.Select(GetOrCreateTag).ToList()
+            })
+            .ToList();
+    }
+
+    public BlogPost? FindPostByFileName(string fileName) =>
         _dbContext
             .BlogPosts
+            .Include(bp => bp.Tags)
             .Where(p => p.FileName == fileName)
             .FirstOrDefault();
 
-    public IEnumerable<BlogPost> FindPostsByPage(int pageNumber, int postPerPage) => 
+    public IEnumerable<BlogPost> FindPostsByPage(int pageNumber, int postPerPage) =>
         _dbContext
             .BlogPosts
+            .Include(bp => bp.Tags)
             .OrderByDescending(p => p.Created)
             .Skip(pageNumber * postPerPage)
             .Take(postPerPage).ToList();
 
-    private IQueryable<BlogPost> PostsByYear(int year) => 
+    private IQueryable<BlogPost> PostsByYear(int year) =>
         _dbContext
             .BlogPosts
+            .Include(bp => bp.Tags)
             .Where(bp => 
                 bp.Created != DateTime.MinValue && 
                 bp.Created.Year == year);
@@ -51,6 +89,7 @@ public class BlogPostRepository : IBlogPostRepository
     public IQueryable<BlogPost> RetrieveAll() =>
             _dbContext
             .BlogPosts
+            .Include(bp => bp.Tags)
             .OrderByDescending(p => p.Created);
 
     public async Task<IEnumerable<int>> GetAllYears(CancellationToken cancellationToken) => 

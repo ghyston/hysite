@@ -75,6 +75,11 @@ p {
   text-indent: 20px;
 }
 
+ p.tags {
+    font-size: 0.7rem;
+    color: #888;
+  }
+
 .blogTitleItem:hover {
   text-decoration: underline !important;
   color: whitesmoke !important;
@@ -110,8 +115,20 @@ p {
     color: black !important;
   }
 
+  code.bash {
+    background-color: #f0f0f0;
+    color: #333;
+  }
+  
   pre,
   code {
     background-color: lightgray;
   }
+
+  p.tags {
+    font-size: 0.7pem;
+    color: #888;
+  }
+
+
 }

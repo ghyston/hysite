@@ -3,6 +3,7 @@ using System.IO;
 using System.Security;
 using System.Threading;
 using System.Threading.Tasks;
+using HySite.Domain.Model;
 using HySite.Application.Dto;
 using HySite.Application.Interfaces;
 using MediatR;
@@ -25,9 +26,16 @@ public class UpdatePostsCommandHandler : IRequestHandler<UpdatePostsCommand>
     private readonly IFileParserService _fileParserService;
     private readonly ILogger<UpdatePostsCommandHandler> _logger;
     private readonly IRssFeedService _rssFeedService;
+    private readonly IBlogPostRepository _blogPostRepository;
     private readonly IHysiteContext _dbContext;
 
-    public UpdatePostsCommandHandler(IGitService gitService, IConfiguration configuration, IFileParserService fileParserService, ILogger<UpdatePostsCommandHandler> logger, IRssFeedService rssFeedService, IHysiteContext dbContext)
+    public UpdatePostsCommandHandler(IGitService gitService,
+        IConfiguration configuration,
+        IFileParserService fileParserService,
+        ILogger<UpdatePostsCommandHandler> logger,
+        IRssFeedService rssFeedService,
+        IBlogPostRepository blogPostRepository,
+        IHysiteContext dbContext)
     {
         _gitService = gitService;
         _configuration = configuration;
@@ -35,6 +43,7 @@ public class UpdatePostsCommandHandler : IRequestHandler<UpdatePostsCommand>
         _logger = logger;
         _rssFeedService = rssFeedService;
         _dbContext = dbContext;
+        _blogPostRepository = blogPostRepository;
     }
 
     //TODO: common code to load git settings?
@@ -69,14 +78,13 @@ public class UpdatePostsCommandHandler : IRequestHandler<UpdatePostsCommand>
         var rssPath = String.Join('/', path, fileName);
 
         _gitService.Pull(settings);
-        //TODO: mostly copypasted from clone repository
-        var posts = _fileParserService.ParseExistingFiles(postsPath);
 
-        if(!posts.Any())
-        {
-            _logger.LogError($"No posts have been loaded");
-            return Unit.Value; //TODO: rss should be updated then anyway!
-        }
+        var postDtos = _fileParserService
+            .ParseExistingFiles(postsPath);
+
+        var posts = await _blogPostRepository.CreatePosts(postDtos, cancellationToken);
+        foreach (var post in posts)
+            post.HtmlContent = _fileParserService.ConvertToHtml(post.MdContent);
 
         // TODO: do upsert, not a complete overwrite
         _dbContext.BlogPosts.RemoveRange(_dbContext.BlogPosts);

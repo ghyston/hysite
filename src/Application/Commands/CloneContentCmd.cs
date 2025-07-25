@@ -1,7 +1,8 @@
 using Microsoft.Extensions.Configuration;
-using HySite.Application.Interfaces;
 using MediatR;
 using FluentValidation;
+using HySite.Domain.Model;
+using HySite.Application.Interfaces;
 using HySite.Application.Dto;
 using Microsoft.Extensions.Logging;
 
@@ -21,14 +22,17 @@ public class CloneContentHandler : IRequestHandler<CloneContentCmd>
     private readonly IFileParserService _fileParserService;
     private readonly IHysiteContext _dbContext;
     private readonly IRssFeedService _rssFeedService;
+    private readonly IBlogPostRepository _blogPostRepository;
     private readonly ILogger<CloneContentHandler> _logger;
 
+    //TODO: use primary constructors
     public CloneContentHandler(IGitService service,
         IConfiguration configuration,
         IValidator<GitSettingsDto> settingsValidator,
         IFileParserService fileParserService,
         IHysiteContext hysiteContext,
         IRssFeedService rssFeedService,
+        IBlogPostRepository blogPostRepository,
         ILogger<CloneContentHandler> logger)
     {
         _gitService = service;
@@ -37,6 +41,7 @@ public class CloneContentHandler : IRequestHandler<CloneContentCmd>
         _fileParserService = fileParserService;
         _dbContext = hysiteContext;
         _rssFeedService = rssFeedService;
+        _blogPostRepository = blogPostRepository;
         _logger = logger;
     }
 
@@ -71,8 +76,14 @@ public class CloneContentHandler : IRequestHandler<CloneContentCmd>
             return Unit.Value;
         }
 
-        var posts = _fileParserService.ParseExistingFiles(postsPath);
-        if(!posts.Any())
+        var postDtos = _fileParserService
+            .ParseExistingFiles(postsPath);
+
+        var posts = await _blogPostRepository.CreatePosts(postDtos, cancellationToken);
+        foreach (var post in posts)
+            post.HtmlContent = _fileParserService.ConvertToHtml(post.MdContent);
+
+        if (!posts.Any())
         {
             _logger.LogError($"No posts have been loaded");
             return Unit.Value;

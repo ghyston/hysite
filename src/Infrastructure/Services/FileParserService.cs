@@ -2,6 +2,7 @@ using System.Globalization;
 using HySite.Application.Interfaces;
 using HySite.Domain.Common;
 using HySite.Domain.Model;
+using HySite.Domain.Dtos;
 using Markdig;
 using Markdown.ColorCode;
 using Microsoft.Extensions.FileProviders;
@@ -18,19 +19,13 @@ public class FileParserServiceException : Exception
     public FileParserServiceException(string message, Exception inner) : base(message, inner) { }
 }
 
-public class FileParserService : IFileParserService
+public class FileParserService(
+    IFileProvider fileProvider,
+    ILogger<FileParserService> logger) : IFileParserService
 {
-    private readonly IFileProvider _fileProvider;
+    private readonly IFileProvider _fileProvider = fileProvider;
 
-    private readonly ILogger<FileParserService> _logger;
-
-    public FileParserService(
-        IFileProvider fileProvider,
-        ILogger<FileParserService> logger)
-    {
-        _fileProvider = fileProvider;
-        _logger = logger;
-    }
+    private readonly ILogger<FileParserService> _logger = logger;
 
     private void LoadFiles(string path, ref List<IFileInfo> result)
     {
@@ -46,14 +41,14 @@ public class FileParserService : IFileParserService
             LoadFiles(Path.Combine(path, subdir.Name), ref result);
     }
 
-    public IEnumerable<BlogPost> ParseExistingFiles(string path)
+    public IEnumerable<BlogPostDto> ParseExistingFiles(string path)
     {
         var start = DateTime.Now;
 
         List<IFileInfo> files = new ();
         LoadFiles(path, ref files);
 
-        List<BlogPost> posts = new ();
+        List<BlogPostDto> posts = new ();
 
         foreach (var fileInfo in files)
         {
@@ -61,7 +56,8 @@ public class FileParserService : IFileParserService
             using var reader = new StreamReader(fileInfo.CreateReadStream());
 
             var parseResult = ParseFile(fileName, reader);
-            if(!parseResult.IsSuccessful)
+
+            if (!parseResult.IsSuccessful)
             {
                 _logger.LogWarning($"FileParserService.ParseExistingFiles Failed to parse file '{fileName}'. Error: {parseResult.Message}");
                 continue;
@@ -76,14 +72,14 @@ public class FileParserService : IFileParserService
         return posts;
     }
 
-    public Result<BlogPost> ParseFile(string fileName, StreamReader streamReader)
+    public Result<BlogPostDto> ParseFile(string fileName, StreamReader streamReader)
     {
         if (fileName.Contains(' '))
-            return Result<BlogPost>.Error($"Filename should not contain spaces");
+            return Result<BlogPostDto>.Error($"Filename should not contain spaces");
 
         var title = streamReader.ReadLine()?.Trim();
         if (title is null)
-            return Result<BlogPost>.Error($"File is empty");
+            return Result<BlogPostDto>.Error($"File is empty");
 
         var timeStr = streamReader.ReadLine()?.Trim() ?? string.Empty;
         var dateFormat = "yyyy/MM/dd HH:mm";
@@ -95,36 +91,49 @@ public class FileParserService : IFileParserService
         }
         catch (FormatException)
         {
-            return Result<BlogPost>.Error($"'{timeStr}' is not in the correct date format '{dateFormat}'");
+            return Result<BlogPostDto>.Error($"'{timeStr}' is not in the correct date format '{dateFormat}'");
         }
 
         var unusedMetaDataLine = streamReader.ReadLine()?.Trim();
+
+        string[] tags = [];
+
         while (unusedMetaDataLine != "@@@")
         {
             if (streamReader.EndOfStream)
-                return Result<BlogPost>.Error("Metadata marker not found");
+                return Result<BlogPostDto>.Error("Metadata marker not found");
+
+            if (tags.Count() == 0)
+                tags = unusedMetaDataLine.Split(',')
+                    .Select(tag => tag.Trim())
+                    .Where(tag => !string.IsNullOrEmpty(tag))
+                    .ToArray();
 
             unusedMetaDataLine = streamReader.ReadLine()?.Trim();
         }
 
+        var content = streamReader.ReadToEnd();
+
+        return Result<BlogPostDto>.Success(
+            new BlogPostDto()
+            {
+                Created = postCreated,
+                Title = title,
+                FileName = Path.GetFileNameWithoutExtension(fileName).ToLower(),
+                Content = content,
+                Tags = tags
+            });
+    }
+
+    public string ConvertToHtml(string markdown)
+    {
         var pipeline = new MarkdownPipelineBuilder()
             .UseAdvancedExtensions()
             .UseColorCode()
             .UseFootnotes()
             .Build();
 
-        var mdContent = streamReader.ReadToEnd();
-        var htmlContent = Markdig.Markdown.ToHtml(mdContent, pipeline);
-
-        return Result<BlogPost>.Success(
-            new BlogPost()
-            {
-                FileName = Path.GetFileNameWithoutExtension(fileName).ToLower(),
-                Title = title,
-                MdContent = mdContent,
-                HtmlContent = htmlContent,
-                Created = postCreated
-            });
+        return Markdig.Markdown.ToHtml(markdown, pipeline);
     }
 }
 

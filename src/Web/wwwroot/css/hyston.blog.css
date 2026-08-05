@@ -135,14 +135,34 @@ p.tags {
     color: black !important;
   }
 
-  code.bash {
+  pre {
     background-color: #f0f0f0;
     color: #333;
   }
 
-  pre,
-  code {
-    background-color: lightgray;
+  pre code {
+    background-color: transparent;
+    color: inherit;
+    padding: 0;
+  }
+
+  :not(pre)>code {
+    background-color: #f0f0f0;
+    color: #333;
+  }
+
+  div[style*='background-color:#1E1E1E'] {
+    background-color: #f0f0f0 !important;
+    color: #333 !important;
+  }
+
+  div[style*='background-color:#1E1E1E'] pre {
+    background-color: #f0f0f0;
+    color: #333;
+  }
+
+  div[style*='background-color:#1E1E1E'] span {
+    color: #333 !important;
   }
 
   p.tags {

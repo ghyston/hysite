@@ -1,0 +1,11 @@
+@page
+@model TestPostModel
+<br/>
+<p> HERE I'm going to test parsing</p>
+@Html.Raw(@Model.HtmlContent)
+</br>
+</br>
+@Html.Raw(@Model.PostContent)
+</br>
+</br>
+@Html.Raw(@Model.PostContentConverted)

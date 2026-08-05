@@ -83,6 +83,14 @@ public class BlogPostRepository : IBlogPostRepository
             .OrderBy(bp => bp.Created)
             .ToListAsync(cancellationToken);
 
+    public async Task<List<BlogPost>> FindPostsByTag(string tagName, CancellationToken cancellationToken) =>
+        await _dbContext
+            .BlogPosts
+            .Include(bp => bp.Tags)
+            .Where(bp => bp.Tags.Any(t => t.Name == tagName))
+            .OrderBy(bp => bp.Created)
+            .ToListAsync(cancellationToken);
+
     public async Task<bool> AnyPostsAtYear(int year, CancellationToken cancellationToken) => 
         await PostsByYear(year).AnyAsync(cancellationToken);
 
@@ -99,6 +107,12 @@ public class BlogPostRepository : IBlogPostRepository
             .Select(bp => bp.Created.Year)
             .Distinct()
             .OrderBy(x => x)
+            .ToListAsync(cancellationToken);
+
+    public async Task<IEnumerable<string>> GetAllTags(CancellationToken cancellationToken) =>
+        await _dbContext.BlogTags
+            .OrderBy(bt => bt.BlogPosts.Count)
+            .Select(t => t.Name)
             .ToListAsync(cancellationToken);
 
     public int PostsCount() => _dbContext.BlogPosts.Count();

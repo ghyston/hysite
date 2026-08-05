@@ -14,7 +14,9 @@ public interface IBlogPostRepository
     IEnumerable<BlogPost> FindPostsByPage(int pageNumber, int postPerPage);
     Task<bool> AnyPostsAtYear(int year, CancellationToken cancellationToken);
     Task<List<BlogPost>> FindPostsByYear(int year, CancellationToken cancellationToken);
+    Task<List<BlogPost>> FindPostsByTag(string tagName, CancellationToken cancellationToken);
     Task<IEnumerable<int>> GetAllYears(CancellationToken cancellationToken);
+    Task<IEnumerable<string>> GetAllTags(CancellationToken cancellationToken);
     IQueryable<BlogPost> RetrieveAll();
     int PostsCount();
     void Remove(BlogPost post);

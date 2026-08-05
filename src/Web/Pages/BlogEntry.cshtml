@@ -3,5 +3,14 @@
 <h2><a href="@Html.Raw(Model.FileName)">@Html.Raw(Model.Title)</a></h2>
 <p class="entryDate">@Html.Raw(@Model.Created.ToString("MMMM d, yyyy"))</p>
 @Html.Raw(@Model.HtmlContent)
-<p class="tags">tags: @string.Join(", ", @Model.Tags.Select(t => t.Name))</p>
+<p class="tags">tags:
+@for (var i = 0; i < Model.Tags.Count; i++)
+{
+    <a href=~/Tag/@Model.Tags.ElementAt(i).Name>@Model.Tags.ElementAt(i).Name</a>
+    @if (i < Model.Tags.Count - 1)
+    {
+        <text>, </text>
+    }
+}
+</p>
 <hr />

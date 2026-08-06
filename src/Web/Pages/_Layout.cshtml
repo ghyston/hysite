@@ -1,5 +1,12 @@
 <!DOCTYPE html>
-<html>
+@{
+    var themeCookie = Context.Request.Cookies[HySite.Application.Helpers.ThemePreferenceHelper.CookieName];
+    var theme = HySite.Application.Helpers.ThemePreferenceHelper.ResolveTheme(themeCookie);
+    var themeClass = HySite.Application.Helpers.ThemePreferenceHelper.GetThemeClass(theme);
+    var nextTheme = HySite.Application.Helpers.ThemePreferenceHelper.GetNextTheme(theme);
+    var themeIconClass = HySite.Application.Helpers.ThemePreferenceHelper.GetThemeIconClass(theme);
+}
+<html class="@themeClass">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -9,6 +16,12 @@
     <link href="https://mastodon.social/@@hyston" rel="me">
 </head>
 <body>
+    <form class="themeToggle" method="post" action="/theme/toggle">
+        <input type="hidden" name="returnUrl" value="@(Context.Request.PathBase + Context.Request.Path + Context.Request.QueryString)" />
+        <button class="themeToggleButton" type="submit" name="theme" value="@nextTheme" aria-label="Current theme: @theme. Switch to @nextTheme">
+            <span class="themeToggleIcon @themeIconClass" aria-hidden="true"></span>
+        </button>
+    </form>
     <div style="width: 100%; text-align: center">
         <a class="blogTitle" href="/">Hyston blog</a>
         <br/>

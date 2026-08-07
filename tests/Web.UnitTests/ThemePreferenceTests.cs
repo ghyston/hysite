@@ -69,16 +69,16 @@ public class ThemePreferenceTests
     }
 
     [Fact]
-    public void CreateCookieOptionsExpiresInOneDay()
+    public async Task CreateCookieOptionsExpiresInOneDay()
     {
         var before = DateTimeOffset.UtcNow.AddDays(1).AddSeconds(-1);
 
-        var result = new ToggleThemeCommandHandler().Handle(new ToggleThemeCommand
+        var result = await new ToggleThemeCommandHandler().Handle(new ToggleThemeCommand
         {
             CurrentTheme = Theme.Auto,
             RequestedTheme = Theme.Light,
             ReturnUrl = "/"
-        }, CancellationToken.None).Result;
+        }, CancellationToken.None);
 
         var after = DateTimeOffset.UtcNow.AddDays(1).AddSeconds(1);
         result.CookieExpiresAt.Should().BeOnOrAfter(before);

@@ -57,7 +57,7 @@ public class UpdatePostsCommandHandler : IRequestHandler<UpdatePostsCommand>
             ?? string.Empty
     };
 
-    public async Task<Unit> Handle(UpdatePostsCommand request, CancellationToken cancellationToken)
+    public async Task Handle(UpdatePostsCommand request, CancellationToken cancellationToken)
     {
         using var reader = new StreamReader(request.Payload);
 
@@ -70,7 +70,7 @@ public class UpdatePostsCommandHandler : IRequestHandler<UpdatePostsCommand>
         if(string.IsNullOrWhiteSpace(postsPath))
         {
             _logger.LogError($"Posts local path is not set");
-            return Unit.Value;
+            return;
         }
 
         var path = _configuration["PostsLocalPath"];
@@ -94,6 +94,6 @@ public class UpdatePostsCommandHandler : IRequestHandler<UpdatePostsCommand>
 
         _rssFeedService.CreateRssFeed(posts, rssPath);
 
-        return Unit.Value;
+        return;
     }
 }

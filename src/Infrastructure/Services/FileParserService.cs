@@ -98,12 +98,12 @@ public class FileParserService(
 
         string[] tags = [];
 
-        while (unusedMetaDataLine != "@@@")
+        while (unusedMetaDataLine is not null && unusedMetaDataLine != "@@@")
         {
             if (streamReader.EndOfStream)
                 return Result<BlogPostDto>.Error("Metadata marker not found");
 
-            if (tags.Count() == 0)
+            if (tags.Length == 0)
                 tags = unusedMetaDataLine.Split(',')
                     .Select(tag => tag.Trim())
                     .Where(tag => !string.IsNullOrEmpty(tag))
@@ -111,6 +111,9 @@ public class FileParserService(
 
             unusedMetaDataLine = streamReader.ReadLine()?.Trim();
         }
+
+        if (unusedMetaDataLine is null)
+            return Result<BlogPostDto>.Error("Metadata marker not found");
 
         var content = streamReader.ReadToEnd();
 
@@ -136,5 +139,4 @@ public class FileParserService(
         return Markdig.Markdown.ToHtml(markdown, pipeline);
     }
 }
-
 

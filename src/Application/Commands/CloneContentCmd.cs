@@ -55,7 +55,7 @@ public class CloneContentHandler : IRequestHandler<CloneContentCmd>
             ?? string.Empty
     };
 
-    public async Task<Unit> Handle(CloneContentCmd request, CancellationToken cancellationToken)
+    public async Task Handle(CloneContentCmd request, CancellationToken cancellationToken)
     {
         var settings = LoadSettings();
         var result = await _settingsValidator.ValidateAsync(settings);
@@ -64,7 +64,7 @@ public class CloneContentHandler : IRequestHandler<CloneContentCmd>
         {
             var errors = string.Join(' ', result.Errors.Select(e => e.ErrorMessage));
             _logger.LogError($"Error in git settings: {errors}");
-            return Unit.Value;    
+            return;
         }
 
         _gitService.Clone(settings);
@@ -73,7 +73,7 @@ public class CloneContentHandler : IRequestHandler<CloneContentCmd>
         if(string.IsNullOrWhiteSpace(postsPath))
         {
             _logger.LogError($"Posts local path is not set");
-            return Unit.Value;
+            return;
         }
 
         var postDtos = _fileParserService
@@ -86,7 +86,7 @@ public class CloneContentHandler : IRequestHandler<CloneContentCmd>
         if (!posts.Any())
         {
             _logger.LogError($"No posts have been loaded");
-            return Unit.Value;
+            return;
         }
 
         // TODO: do upsert, not a complete overwrite
@@ -100,6 +100,6 @@ public class CloneContentHandler : IRequestHandler<CloneContentCmd>
 
         _rssFeedService.CreateRssFeed(posts, rssPath);
 
-        return Unit.Value;
+        return;
     }
 }

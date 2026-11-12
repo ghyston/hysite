@@ -3,18 +3,15 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Hosting;
 using HySite.Application;
 using HySite.Application.Interfaces;
 using HySite.Infrastructure;
 using HySite.Web;
+using HySite.Web.Services;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Logging.ClearProviders();
-builder.Logging.AddConsole();
-
-var logsPath = builder.Configuration["LogsLocalPath"];
-var logsFullPath = EnsureDirectoryExist(Directory.GetCurrentDirectory(), logsPath);
-builder.Logging.AddFile(logsFullPath + "/hysite-{Date}.log");
+new LoggingConfigurator().Configure(builder.Logging, builder.Configuration, builder.Environment.IsDevelopment());
 
 // Configure services
 builder.Services.AddApplication();
